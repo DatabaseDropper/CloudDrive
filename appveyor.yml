@@ -1,4 +1,6 @@
 build_script:
     - dotnet --version
-    - cd src/CloudDrive
+    - cd src
     - dotnet build
+    - dotnet test
+    
