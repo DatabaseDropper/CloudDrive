@@ -8,11 +8,17 @@ using Microsoft.Extensions.Logging;
 namespace CloudDrive.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/[controller]")]
     public class AccountController : ControllerBase
     {
         public AccountController()
         {
+        }
+
+        [HttpGet]
+        public IActionResult Test()
+        {
+            return Ok(DateTime.Now);
         }
     }
 }
