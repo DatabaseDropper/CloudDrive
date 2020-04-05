@@ -14,6 +14,6 @@ Cloud Drive incorporates a system of file sharing in which the creator of a file
 
 **How do we work?**
 
-Almost every change to the code, or something that extends current state must go through Pull Request, which must pass tests, review and then be merged by Owners, so generally whole development is being done on feature branches. 
+Almost every change to the code, or something that extends current state must go through Pull Request which must pass the tests performed by Appveyor, then the review and then be merged by Code Owners, so generally whole development is being done on feature branches. 
 
 The goal is to keep master as stable as possible.
