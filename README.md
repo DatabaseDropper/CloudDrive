@@ -11,3 +11,9 @@ Cloud Drive offers users {place_holder} gigabytes of free storage through. Users
 **Sharing**
 
 Cloud Drive incorporates a system of file sharing in which the creator of a file or folder is, by default, its owner. The owner can regulate the public visibility of the file or folder. Ownership is not transferable yet. Files or folders can be shared privately with particular users having a Cloud Drive account. Sharing files with users not having a Google account requires making them accessible to "anybody with the link". This generates a secret URL for the file, which may be shared via email or private messages. The owner may also set an access level for regulating permissions. The two access levels offered are "can remove", "can view".
+
+**How do we work?**
+
+Almost every change to the code, or something that extends current state must go through Pull Request, which must pass tests, review and then be merged by Owners, so generally whole development is being done on feature branches. 
+
+The goal is to keep master as stable as possible.
