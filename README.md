@@ -23,13 +23,16 @@ The goal is to keep master as stable as possible.
 The Cloud Drive Code of Conduct is one of the ways we put Cloud Drive’s values into practice. It’s built around the recognition that everything we do in connection with our work at Cloud Drive will be, and should be, measured against the highest possible standards of ethical business conduct. We set the bar that high for practical as well as aspirational reasons: Our commitment to the highest standards helps us hire great people, build great products, and attract loyal users. Respect for our users, for the opportunity, and for each other are foundational to our success, and are something we need to support every day.
 
 So please do read the Code and Cloud Drive’s values, and follow both in spirit and letter, always bearing in mind that each of us has a personal responsibility to incorporate, and to encourage other Cloud Drivers to incorporate, the principles of the Code and values into our work. And if you have a question or ever think that one of your fellow Cloud Drivers or the company as a whole may be falling short of our commitment, don’t be silent. We want – and need – to hear from you.
-Who Must Follow Our Code?
+
+* Who Must Follow Our Code?
 
 We expect all of our employees and Board members to know and follow the Code. Failure to do so can result in disciplinary action, including termination of employment. Moreover, while the Code is specifically written for Cloud Drive employees and Board members, we expect Cloud Drive contractors, consultants, and others who may be temporarily assigned to perform work or services for Cloud Drive to follow the Code in connection with their work for us. Failure of a Cloud Drive contractor, consultant, or other covered service provider to follow the Code can result in termination of their relationship with Cloud Drive.
-What If I Have a Code-Related Question or Concern?
+
+* What If I Have a Code-Related Question or Concern?
 
 If you have a question or concern, don’t just sit there. You can contact your manager, your Human Resources representative, or Ethics & Compliance. You can also submit a question or raise a concern of a suspected violation of our Code or any other Cloud Drive policy through the Ethics & Compliance Helpline. Finally, if you believe a violation of law has occurred, you can always raise that through the Ethics & Compliance helpline or with a government agency.
-No Retaliation
+
+* No Retaliation
 
 Cloud Drive prohibits retaliation against any worker here at Cloud Drive who reports or participates in an investigation of a possible violation of our Code, policies, or the law. If you believe you are being retaliated against, please contact Ethics & Compliance.
 I. Serve Our Users
