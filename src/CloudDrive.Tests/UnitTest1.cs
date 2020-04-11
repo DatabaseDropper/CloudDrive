@@ -4,11 +4,11 @@ using Xunit;
 
 namespace CloudDrive.Tests
 {
-    public class UnitTest1 : IClassFixture<WebApplicationFactory<Startup>>
+    public class UnitTest1 : IClassFixture<CustomWebApplicationFactory<FakeStartup>>
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private readonly CustomWebApplicationFactory<FakeStartup> _factory;
 
-        public UnitTest1(WebApplicationFactory<Startup> factory)
+        public UnitTest1(CustomWebApplicationFactory<FakeStartup> factory)
         {
             _factory = factory;
         }
