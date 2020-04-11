@@ -28,6 +28,10 @@ namespace CloudDrive.Models
 
 		public long FreeSpaceAsKB => TotalSpaceAsKB - UsedSpaceAsKB;
 
+		public Guid OwnerId { get; private set; }
+
+		public User Owner { get; private set; }
+
 		public DateTime CreationDate { get; private set; } = DateTime.Now;
 
 		public void ResizeDisk(long DesiredSize)
