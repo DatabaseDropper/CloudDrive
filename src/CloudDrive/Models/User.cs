@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CloudDrive.Models
 {
@@ -30,6 +31,8 @@ namespace CloudDrive.Models
 		public Guid DiskId { get; private set; }
 
 		public Disk Disk { get; private set; }
+
+		public List<UserAccess> SharedFolders { get; private set; } = new List<UserAccess>();
 
 		public DateTime RegistrationDate { get; private set; } = DateTime.Now;
 
