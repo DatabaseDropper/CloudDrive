@@ -1,4 +1,4 @@
-using CloudDrive.Database;
+﻿using CloudDrive.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace CloudDrive
+namespace CloudDrive.Tests
 {
-    public class Startup
+    public class FakeStartup
     {
-        public Startup(IConfiguration configuration)
+        public FakeStartup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -19,7 +19,7 @@ namespace CloudDrive
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Action<DbContextOptionsBuilder> db_configuration = x => x.UseSqlServer(Configuration["Database:ConnectionString"]);
+            Action<DbContextOptionsBuilder> db_configuration = x => x.UseSqlite($"Filename={Guid.NewGuid():N}.db");
             StartupHelper.ConfigureServices(services, db_configuration);
         }
 
