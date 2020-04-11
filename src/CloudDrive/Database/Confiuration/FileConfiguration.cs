@@ -9,6 +9,7 @@ namespace CloudDrive.Database.Confiuration
         public void Configure(EntityTypeBuilder<File> builder)
         {
             builder.HasKey(x => x.Id);
+
             builder.Property(x => x.UserFriendlyName).IsRequired().HasMaxLength(128);
             builder.Property(x => x.PhysicalFileName).IsRequired().HasMaxLength(128);
             builder.Property(x => x.SizeAsKB).IsRequired();
