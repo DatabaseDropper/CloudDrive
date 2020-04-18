@@ -19,8 +19,7 @@ namespace CloudDrive.Tests
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var guid = Guid.NewGuid();
-            Action<DbContextOptionsBuilder> db_configuration = x => x.UseSqlite($"Filename={guid}.db");
+            Action<DbContextOptionsBuilder> db_configuration = x => x.UseSqlite(Configuration["Database:TestString"]);
             Configuration["Auth:SecretKey"] = "abncdefdfgd2345_&*(&(^&";
             StartupHelper.ConfigureServices(services, db_configuration, Configuration);
         }
