@@ -1,4 +1,5 @@
-﻿using CloudDrive.Models;
+﻿using CloudDrive.Interfaces;
+using CloudDrive.Models;
 using CloudDrive.Models.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +9,7 @@ using System.Security.Claims;
 using System.Text;
 namespace CloudDrive.Services
 {
-    public class JwtService
+    public class JwtService : ITokenService
     {
         private readonly IConfiguration _configuration;
 
