@@ -7,7 +7,10 @@ using Microsoft.OpenApi.Models;
 using System;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Hosting;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace CloudDrive
 {
@@ -55,8 +58,35 @@ namespace CloudDrive
                 endpoints.MapControllers();
             });
         }
-        public static void ConfigureServices(IServiceCollection services, Action<DbContextOptionsBuilder> db_config)
+
+        public static void ConfigureServices(IServiceCollection services, Action<DbContextOptionsBuilder> db_config, IConfiguration configuration)
         {
+            var key = configuration["Auth:SecretKey"];
+
+            if (string.IsNullOrWhiteSpace(key))
+                throw new Exception("JWT Secret key is not configured.");
+
+            var keyBytes = Encoding.ASCII.GetBytes(key);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    
+                };
+            });
             services.AddControllers();
 
             services.AddDbContext<Context>(db_config);
