@@ -11,6 +11,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using System.Text;
+using FluentValidation.AspNetCore;
+using CloudDrive.Models.Validators;
+using CloudDrive.Interfaces;
+using CloudDrive.Services;
+using Microsoft.AspNetCore.Identity;
+using CloudDrive.Models;
 
 namespace CloudDrive
 {
@@ -61,6 +67,21 @@ namespace CloudDrive
 
         public static void ConfigureServices(IServiceCollection services, Action<DbContextOptionsBuilder> db_config, IConfiguration configuration)
         {
+            services.AddTransient<ITokenService, JwtService>();
+            services.AddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddTransient<AccountService>();
+
+            ConfigureJWT(services, configuration);
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterInputValidator>());
+            services.AddDbContext<Context>(db_config);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cloud Drive API", Version = "v1" });
+            });
+        }
+
+        private static void ConfigureJWT(IServiceCollection services, IConfiguration configuration)
+        {
             var key = configuration["Auth:SecretKey"];
 
             if (string.IsNullOrWhiteSpace(key))
@@ -84,16 +105,8 @@ namespace CloudDrive
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
-                    
+
                 };
-            });
-            services.AddControllers();
-
-            services.AddDbContext<Context>(db_config);
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cloud Drive API", Version = "v1" });
             });
         }
     }
