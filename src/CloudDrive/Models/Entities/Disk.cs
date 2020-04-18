@@ -48,9 +48,9 @@ namespace CloudDrive.Models
 			var folder = new Folder();
 			disk.Owner = user;
 			disk.OwnerId = user.Id;
-			disk.Folder.OwnerId = user.Id;
 			disk.Folder = folder;
 			disk.FolderId = folder.Id;
+			disk.Folder.OwnerId = user.Id;
 			return disk;
 		}
 	}
