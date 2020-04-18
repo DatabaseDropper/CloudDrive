@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CloudDrive.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace CloudDrive.Controllers
 {
@@ -11,12 +8,15 @@ namespace CloudDrive.Controllers
     [Route("api/v1/[controller]")]
     public class AccountController : ControllerBase
     {
-        public AccountController()
+        private readonly ITokenService _tokenService;
+
+        public AccountController(ITokenService tokenService)
         {
+            _tokenService = tokenService;
         }
 
-        [HttpGet]
-        public IActionResult Test()
+        [HttpPost("Register")]
+        public IActionResult Register()
         {
             return Ok(DateTime.Now);
         }
