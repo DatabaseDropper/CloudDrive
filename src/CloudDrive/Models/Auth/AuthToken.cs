@@ -14,5 +14,7 @@
         public string Id { get; set; }
 
         public long ExpiresAt { get; set; }
+
+        public LoginDiskInfo DiskInfo { get; set; }
     }
 }

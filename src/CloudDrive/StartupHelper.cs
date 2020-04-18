@@ -70,6 +70,8 @@ namespace CloudDrive
             services.AddTransient<ITokenService, JwtService>();
             services.AddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddTransient<AccountService>();
+            services.AddTransient<FileService>();
+            services.AddTransient<UserService>();
 
             ConfigureJWT(services, configuration);
             services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterInputValidator>());
