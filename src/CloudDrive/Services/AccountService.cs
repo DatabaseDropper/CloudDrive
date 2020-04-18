@@ -37,12 +37,28 @@ namespace CloudDrive.Services
                 errors.Add("This login is already being used.");
 
             if (errors.Count > 0)
-                return new Result<AuthToken>(false, null, errors);
+                return new Result<AuthToken>(false, null, errors, ErrorType.BadRequest);
 
             var user = User.CreateUser(input.Login, input.UserName, input.Email, 50.MBtoKB());
             user.PasswordHash = _hasher.HashPassword(user, input.Password);
 
             var token = _tokenService.BuildToken(user);
+
+            token.DiskInfo = new LoginDiskInfo
+            {
+                DiskId = user.DiskId,
+                DiskName = user.Disk.Name,
+                FolderId = user.Disk.FolderId
+            };
+
+            var result = await _context.Users.AddAsync(user);
+            var changedRows = await _context.SaveChangesAsync();
+
+            if (changedRows == 0)
+            {
+                return new Result<AuthToken>(false, null, "Something went wrong", ErrorType.Internal);
+            }
+
             return new Result<AuthToken>(true, token);
         }
 
@@ -55,17 +71,24 @@ namespace CloudDrive.Services
 
             if (user == null)
             {
-                return new Result<AuthToken>(false, null, "Incorrect credentials." );
+                return new Result<AuthToken>(false, null, "Incorrect credentials.", ErrorType.BadRequest);
             }
 
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, input.Password);
 
             if (result != PasswordVerificationResult.Success)
             {
-                return new Result<AuthToken>(false, null, "Incorrect credentials." );
+                return new Result<AuthToken>(false, null, "Incorrect credentials.", ErrorType.BadRequest);
             }
 
             var token = _tokenService.BuildToken(user);
+
+            token.DiskInfo = new LoginDiskInfo
+            {
+                DiskId = user.DiskId,
+                DiskName = user.Disk.Name,
+                FolderId = user.Disk.FolderId
+            };
 
             return new Result<AuthToken>(true, token);
         }
