@@ -42,11 +42,13 @@ namespace CloudDrive.Models
 			TotalSpaceAsKB = DesiredSize;
 		}
 
-		public static Disk CreateDisk(long SizeAsKB)
+		public static Disk CreateDisk(long SizeAsKB, User user)
 		{
 			var disk = new Disk(SizeAsKB);
 			var folder = new Folder();
-
+			disk.Owner = user;
+			disk.OwnerId = user.Id;
+			disk.Folder.OwnerId = user.Id;
 			disk.Folder = folder;
 			disk.FolderId = folder.Id;
 			return disk;

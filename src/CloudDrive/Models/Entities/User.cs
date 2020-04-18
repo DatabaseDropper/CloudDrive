@@ -39,7 +39,7 @@ namespace CloudDrive.Models
 		public static User CreateUser(string Login, string Username, string Email, long DiskSizeAsKB)
 		{
 			var user = new User(Login, Username, Email, Guid.NewGuid().ToString("N"));
-			var disk = Disk.CreateDisk(DiskSizeAsKB);
+			var disk = Disk.CreateDisk(DiskSizeAsKB, user);
 			user.Disk = disk;
 			user.DiskId = disk.Id;
 			return user;

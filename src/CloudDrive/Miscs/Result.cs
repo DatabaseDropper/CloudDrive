@@ -12,6 +12,13 @@ namespace CloudDrive.Miscs
             Success = success;
             Data = data;
             Errors = errors;
+        }      
+        
+        public Result(bool success, T data, string error)
+        {
+            Success = success;
+            Data = data;
+            Errors = new List<string> { error };
         }
 
         public Result(bool success, T data)

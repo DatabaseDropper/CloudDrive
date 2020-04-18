@@ -21,6 +21,8 @@ namespace CloudDrive.Models
 
 		public List<UserAccess> AuthorizedUsers { get; private set; } = new List<UserAccess>();
 
+		public Guid OwnerId { get; set; }
+		
 		public DateTime CreationDate { get; private set; } = DateTime.Now;
 	}
 }
