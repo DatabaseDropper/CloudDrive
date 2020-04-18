@@ -9,7 +9,7 @@ namespace CloudDrive.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
         private readonly ITokenService _tokenService;
         private readonly AccountService _accountService;
@@ -24,6 +24,14 @@ namespace CloudDrive.Controllers
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterInput input)
         {
             var result = await _accountService.TryRegister(input);
+
+            return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(result.Errors);
+        }     
+        
+        [HttpPost("SignIn")]
+        public async Task<IActionResult> SignInAsync([FromBody] LoginInput input)
+        {
+            var result = await _accountService.TrySignIn(input);
 
             return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(result.Errors);
         }

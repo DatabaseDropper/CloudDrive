@@ -28,7 +28,6 @@ namespace CloudDrive.Services
 
         public async Task<Result<AuthToken>> TryRegister(RegisterInput input)
         {
-            var conn = _context.Database.GetDbConnection().ConnectionString;
             var errors = new List<string>();
 
             if (await _context.Users.AnyAsync(x => x.Email.ToLower() == input.Email.ToLower()))
@@ -44,6 +43,30 @@ namespace CloudDrive.Services
             user.PasswordHash = _hasher.HashPassword(user, input.Password);
 
             var token = _tokenService.BuildToken(user);
+            return new Result<AuthToken>(true, token);
+        }
+
+        public async Task<Result<AuthToken>> TrySignIn(LoginInput input)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => 
+                x.Email.ToLower() == input.LoginOrEmail ||
+                x.Login.ToLower() == input.LoginOrEmail.ToLower()
+            );
+
+            if (user == null)
+            {
+                return new Result<AuthToken>(false, null, "Incorrect credentials." );
+            }
+
+            var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, input.Password);
+
+            if (result != PasswordVerificationResult.Success)
+            {
+                return new Result<AuthToken>(false, null, "Incorrect credentials." );
+            }
+
+            var token = _tokenService.BuildToken(user);
+
             return new Result<AuthToken>(true, token);
         }
     }
