@@ -19,8 +19,14 @@ namespace CloudDrive
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Action<DbContextOptionsBuilder> db_configuration = x => x.UseSqlServer(Configuration["Database:ConnectionString"]);
-            StartupHelper.ConfigureServices(services, db_configuration);
+            Action<DbContextOptionsBuilder> db_configuration = x 
+            => x.UseSqlServer
+            (
+                Configuration["Database:ConnectionString"],
+                options => options.EnableRetryOnFailure()
+            );
+
+            StartupHelper.ConfigureServices(services, db_configuration, Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Context context)

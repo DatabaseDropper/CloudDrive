@@ -36,10 +36,10 @@ namespace CloudDrive.Models
 
 		public DateTime RegistrationDate { get; private set; } = DateTime.Now;
 
-		public static User CreateUser(string Login, string Username, string Email, string PasswordHash, long DiskSizeAsKB)
+		public static User CreateUser(string Login, string Username, string Email, long DiskSizeAsKB)
 		{
-			var user = new User(Login, Username, Email, PasswordHash);
-			var disk = Disk.CreateDisk(DiskSizeAsKB);
+			var user = new User(Login, Username, Email, Guid.NewGuid().ToString("N"));
+			var disk = Disk.CreateDisk(DiskSizeAsKB, user);
 			user.Disk = disk;
 			user.DiskId = disk.Id;
 			return user;
