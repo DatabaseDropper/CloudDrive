@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CloudDrive.Interfaces;
 using CloudDrive.Models.Input;
 using CloudDrive.Services;
@@ -20,10 +21,11 @@ namespace CloudDrive.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register([FromBody] RegisterInput input)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterInput input)
         {
-            _accountService.TryRegister(input);
-            return Ok(DateTime.Now);
+            var result = await _accountService.TryRegister(input);
+
+            return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(result.Errors);
         }
     }
 }
