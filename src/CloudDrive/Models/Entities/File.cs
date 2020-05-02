@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudDrive.Models
+namespace CloudDrive.Models.Entities
 {
     public class File
     {

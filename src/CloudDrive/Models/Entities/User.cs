@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CloudDrive.Models
+namespace CloudDrive.Models.Entities
 {
 	public class User
 	{
