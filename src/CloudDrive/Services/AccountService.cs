@@ -65,7 +65,8 @@ namespace CloudDrive.Services
         public async Task<Result<AuthToken>> TrySignIn(LoginInput input)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => 
-                x.Email.ToLower() == input.LoginOrEmail ||
+                x.Email.ToLower() == input.LoginOrEmail.ToLower() 
+                ||
                 x.Login.ToLower() == input.LoginOrEmail.ToLower()
             );
 
