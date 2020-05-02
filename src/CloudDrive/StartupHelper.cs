@@ -73,6 +73,7 @@ namespace CloudDrive
             services.AddTransient<AccountService>();
             services.AddTransient<FileService>();
             services.AddTransient<UserService>();
+            services.Configure<StorageSettings>(configuration.GetSection("Storage"));
 
             ConfigureJWT(services, configuration);
             services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterInputValidator>());
