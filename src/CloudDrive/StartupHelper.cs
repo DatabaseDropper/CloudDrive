@@ -69,6 +69,7 @@ namespace CloudDrive
         {
             services.AddTransient<ITokenService, JwtService>();
             services.AddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddTransient<IFileSystem, FileSystem>();
             services.AddTransient<AccountService>();
             services.AddTransient<FileService>();
             services.AddTransient<UserService>();

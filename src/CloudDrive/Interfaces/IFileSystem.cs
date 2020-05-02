@@ -1,11 +1,13 @@
-﻿namespace CloudDrive.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace CloudDrive.Interfaces
 {
-    interface IFileSystem
+    public interface IFileSystem
     {
-        public (bool Success, string Error) TrySaveFile(string path, byte[] bytes);
+        Task<(bool Success, string Error)> TrySaveFile(string path, byte[] bytes);
 
-        public (bool Success, string Error, byte[] bytes) TryGetFile(string path);
+        Task<(bool Success, string Error, byte[] bytes)> TryGetFile(string path);
 
-        public (bool Success, string Error) TryRemoveFile(string path);
+        Task<(bool Success, string Error)> TryRemoveFile(string path);
     }
 }
