@@ -141,7 +141,7 @@ namespace CloudDrive.Tests
             // Step 2
             var obj = JsonConvert.DeserializeObject<AuthToken>(response.Content);
 
-            var request2 = new RestRequest($"api/v1/File/{obj.DiskInfo.FolderId}", Method.GET, DataFormat.Json);
+            var request2 = new RestRequest($"api/v1/Folder/{obj.DiskInfo.FolderId}", Method.GET, DataFormat.Json);
             request2.AddHeader("Authorization", $"Bearer {obj.Token}");
             response = await rest.ExecuteAsync(request2);
 
