@@ -30,8 +30,8 @@ namespace CloudDrive.Controllers
             return result.Error switch
             {
                 ErrorType.None => Ok(result.Data),
-                ErrorType.NotFound => NotFound(result.Error),
-                ErrorType.Unauthorized => Unauthorized(result.Error),
+                ErrorType.NotFound => NotFound(result.Errors),
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
                 _ => BadRequest()
             };
         }
