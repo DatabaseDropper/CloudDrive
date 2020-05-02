@@ -17,6 +17,8 @@ using CloudDrive.Interfaces;
 using CloudDrive.Services;
 using Microsoft.AspNetCore.Identity;
 using CloudDrive.Models;
+using CloudDrive.Miscs;
+using CloudDrive.Models.Entities;
 
 namespace CloudDrive
 {

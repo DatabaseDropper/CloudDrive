@@ -1,4 +1,4 @@
-﻿using CloudDrive.Models;
+﻿using CloudDrive.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
