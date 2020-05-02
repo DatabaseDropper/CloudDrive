@@ -11,7 +11,7 @@ namespace CloudDrive.Models.Entities
 
 		public Disk(long totalSpaceAsKB)
 		{
-			TotalSpaceAsKB = totalSpaceAsKB;
+			TotalSpace = totalSpaceAsKB;
 		}
 
 		public Guid Id { get; private set; } = Guid.NewGuid();
@@ -22,11 +22,11 @@ namespace CloudDrive.Models.Entities
 
 		public Folder Folder { get; private set; }
 
-		public long TotalSpaceAsKB { get; private set; } = 0;
+		public long TotalSpace { get; set; } = 0;
 
-		public long UsedSpaceAsKB { get; private set; } = 0;
+		public long UsedSpace { get; set; } = 0;
 
-		public long FreeSpaceAsKB => TotalSpaceAsKB - UsedSpaceAsKB;
+		public long FreeSpace => TotalSpace - UsedSpace;
 
 		public Guid OwnerId { get; private set; }
 
@@ -39,7 +39,7 @@ namespace CloudDrive.Models.Entities
 			if (DesiredSize < 0)
 				throw new Exception("Desired disk size must be greaeter or equal to 0");
 
-			TotalSpaceAsKB = DesiredSize;
+			TotalSpace = DesiredSize;
 		}
 
 		public static Disk CreateDisk(long SizeAsKB, User user)
@@ -51,6 +51,7 @@ namespace CloudDrive.Models.Entities
 			disk.Folder = folder;
 			disk.FolderId = folder.Id;
 			disk.Folder.OwnerId = user.Id;
+			folder.DiskHintId = disk.Id;
 			return disk;
 		}
 	}

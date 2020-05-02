@@ -1,4 +1,5 @@
 ﻿using CloudDrive.Models;
+using CloudDrive.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,7 +13,7 @@ namespace CloudDrive.Database.Confiuration
 
             builder.Property(x => x.UserFriendlyName).IsRequired().HasMaxLength(128);
             builder.Property(x => x.PhysicalFileName).IsRequired().HasMaxLength(128);
-            builder.Property(x => x.SizeAsKB).IsRequired();
+            builder.Property(x => x.Size).IsRequired();
 
             builder.HasOne(x => x.UploadedBy);
 

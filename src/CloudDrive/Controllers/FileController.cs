@@ -44,6 +44,21 @@ namespace CloudDrive.Controllers
                 ErrorType.None => File(result.Data.Bytes, mime),
                 _ => BadRequest()
             };
+        }      
+        
+        [HttpPost("Upload/{Id}")]
+        public async Task<IActionResult> UploadFile(Guid Id, IFormFile file)
+        {
+            var user = await _userService.TryGetUserAsync(UserId().Value);
+            var result = await _fileService.UploadFileAsync(Id, file, user);
+
+            return result.Error switch
+            {
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                ErrorType.Internal => StatusCode(StatusCodes.Status500InternalServerError ,result.Errors),
+                ErrorType.None => Ok(result.Data),
+                _ => BadRequest()
+            };
         }
     }
 }

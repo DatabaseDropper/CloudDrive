@@ -9,11 +9,11 @@ namespace CloudDrive.Models.Entities
 
         }
 
-        public File(string userFriendlyName, string physicalFileName, long sizeAsKB, Guid uploadedById, User uploadedBy)
+        public File(string userFriendlyName, string physicalFileName, long size, Guid uploadedById, User uploadedBy)
         {
             UserFriendlyName = userFriendlyName;
             PhysicalFileName = physicalFileName;
-            SizeAsKB = sizeAsKB;
+            Size = size;
             UploadedById = uploadedById;
             UploadedBy = uploadedBy;
         }
@@ -24,7 +24,7 @@ namespace CloudDrive.Models.Entities
 
         public string PhysicalFileName { get; set; }
 
-        public long SizeAsKB { get; private set; }
+        public long Size { get; private set; }
 
         public bool IsAccessibleForEveryone { get; set; } = false;
 

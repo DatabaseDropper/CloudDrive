@@ -6,6 +6,7 @@ using CloudDrive.Models.Entities;
 using CloudDrive.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Linq;
@@ -19,11 +20,11 @@ namespace CloudDrive.Services
         private readonly IFileSystem _fileSystem;
         private readonly StorageSettings _settings;
 
-        public FileService(Context context, IFileSystem fileSystem, StorageSettings settings)
+        public FileService(Context context, IFileSystem fileSystem, IOptions<StorageSettings> settings)
         {
             _context = context;
             _fileSystem = fileSystem;
-            _settings = settings;
+            _settings = settings.Value;
         }
 
         public async Task<Result<FileDTO>> DownloadFileAsync(Guid FileId, User user)
@@ -42,9 +43,9 @@ namespace CloudDrive.Services
                 return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
             }
 
-            var accessList = folder.AuthorizedUsers.Where(x => x.UserId == user.Id);
+            var canAccess = folder.AuthorizedUsers.Any(x => x.UserId == user.Id && x.AccessType == AccessEnum.Read);
 
-            if (accessList.Count() == 0 || !accessList.Any(x => x.AccessType == AccessEnum.Read))
+            if (!canAccess)
             {
                 return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
             }
@@ -61,9 +62,52 @@ namespace CloudDrive.Services
             return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
         }
 
-        public async Task<Result<FileDTO>> UploadFileAsync(Guid id, IFormFile file, User user)
+        public async Task<Result<FileViewModel>> UploadFileAsync(Guid id, IFormFile file, User user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+                return new Result<FileViewModel>(false, null, "Unauthorized", ErrorType.Unauthorized);
+
+            var folder = await _context
+                               .Folders
+                               .Include(x => x.AuthorizedUsers)
+                               .Include(x => x.Files)
+                               .FirstOrDefaultAsync(x => x.Id == id);
+
+            var canAccess = folder.AuthorizedUsers.Any(x => x.UserId == user.Id && x.AccessType == AccessEnum.Write);
+
+            if (!canAccess && folder.OwnerId != user.Id)
+            {
+                return new Result<FileViewModel>(false, null, "Unauthorized", ErrorType.Unauthorized);
+            }
+
+            var folderDisk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == folder.DiskHintId);
+
+            if (folderDisk == null || folderDisk.FreeSpace < file.Length)
+            {
+                return new Result<FileViewModel>(false, null, "Avaliable disk size is smaller than yours file size.", ErrorType.BadRequest);
+            }
+
+            var newFileName = Guid.NewGuid().ToString("N");
+            var path = Path.Combine(_settings.StorageFolderPath, newFileName);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                var result = await _fileSystem.TrySaveFile(path, memoryStream.ToArray());
+
+                if (!result.Success)
+                {
+                    return new Result<FileViewModel>(false, null, result.Error, ErrorType.Internal);
+                }
+            }
+
+            var newFile = new Models.Entities.File(file.FileName, newFileName, file.Length, user.Id, user);
+            folderDisk.UsedSpace += file.Length;
+            folder.Files.Add(newFile);
+
+            await _context.SaveChangesAsync();
+
+            return new Result<FileViewModel>(true, new FileViewModel (newFile.Id, newFile.UserFriendlyName, newFile.Size));
         }
 
         public async Task<Result<FolderContent>> LoadFolderContentAsync(Guid FolderId, User user)
@@ -96,7 +140,7 @@ namespace CloudDrive.Services
 
         private static Result<FolderContent> MapFolderToViewModel(Folder folder)
         {
-            var files = folder.Files.Select(x => new FileViewModel(x.Id, x.UserFriendlyName, x.SizeAsKB)).ToList();
+            var files = folder.Files.Select(x => new FileViewModel(x.Id, x.UserFriendlyName, x.Size)).ToList();
             var folders = folder.Folders.Select(x => new FolderViewModel(x.Id, x.Name, x.Folders.Count + x.Files.Count)).ToList();
             return new Result<FolderContent>(true, new FolderContent(files, folders));
         }

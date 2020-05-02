@@ -1,6 +1,7 @@
 ﻿using CloudDrive.Interfaces;
 using CloudDrive.Models;
 using CloudDrive.Models.Auth;
+using CloudDrive.Models.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;

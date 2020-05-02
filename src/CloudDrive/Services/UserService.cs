@@ -20,7 +20,7 @@ namespace CloudDrive.Services
 
         public async Task<User> TryGetUserAsync(Guid id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        }
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }      
     }
 }
