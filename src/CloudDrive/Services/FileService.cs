@@ -5,6 +5,7 @@ using CloudDrive.Models;
 using CloudDrive.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,11 +15,44 @@ namespace CloudDrive.Services
     {
         private readonly Context _context;
         private readonly IFileSystem _fileSystem;
+        private readonly StorageSettings _settings;
 
-        public FileService(Context context, IFileSystem fileSystem)
+        public FileService(Context context, IFileSystem fileSystem, StorageSettings settings)
         {
             _context = context;
             _fileSystem = fileSystem;
+            _settings = settings;
+        }
+
+        public async Task<Result<FileDTO>> DownloadFileAsync(Guid FileId, User user)
+        {
+            var folder = await _context
+                               .Folders
+                               .Include(x => x.Folders)
+                               .Include(x => x.Files)
+                               .Include(x => x.AuthorizedUsers)
+                               .FirstOrDefaultAsync(x => x.Files.Any(f => f.Id == FileId));
+
+            if (user == null && !folder.IsAccessibleForEveryone)
+            {
+                return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
+            }     
+            
+            if (!folder.AuthorizedUsers.Any(x => x.UserId == user.Id))
+            {
+                return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
+            }
+
+            var file = folder.Files.First(x => x.Id == FileId);
+            var path = Path.Combine(_settings.StorageFolderPath, file.PhysicalFileName);
+            var result = await _fileSystem.TryGetFile(path);
+
+            if (!result.Success)
+            {
+                return new Result<FileDTO>(false, null, "Something went wrong, please try later.", ErrorType.Internal);
+            }
+
+            return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
         }
 
         public async Task<Result<FolderContent>> LoadFolderContentAsync(Guid FolderId, User user)

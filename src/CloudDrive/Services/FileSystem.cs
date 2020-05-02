@@ -9,7 +9,7 @@ namespace CloudDrive.Services
 {
     public class FileSystem : IFileSystem
     {
-        public async Task<(bool Success, string Error, byte[] bytes)> TryGetFile(string path)
+        public async Task<(bool Success, string Error, byte[] Bytes)> TryGetFile(string path)
         {
             if (!File.Exists(path))
             {

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using CloudDrive.Miscs;
 using CloudDrive.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace CloudDrive.Controllers
 {
@@ -20,11 +23,27 @@ namespace CloudDrive.Controllers
             _userService = userService;
         }
 
-        [Authorize]
         [HttpGet("{Id}")]
         public async Task<IActionResult> DownloadFile(Guid Id)
         {
-            throw new Exception();
+            var user = await _userService.TryGetUserAsync(UserId().Value);
+            var result = await _fileService.DownloadFileAsync(Id, user);
+
+            var mime = "";
+
+            if (result.Error == ErrorType.None)
+            {
+                new FileExtensionContentTypeProvider().TryGetContentType(result.Data.UserFriendlyName, out mime);
+                mime = mime ?? MediaTypeNames.Application.Octet;
+            }
+
+            return result.Error switch
+            {
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                ErrorType.Internal => StatusCode(StatusCodes.Status500InternalServerError ,result.Errors),
+                ErrorType.None => File(result.Data.Bytes, mime),
+                _ => BadRequest()
+            };
         }
     }
 }
