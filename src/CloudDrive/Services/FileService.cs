@@ -2,7 +2,9 @@
 using CloudDrive.Interfaces;
 using CloudDrive.Miscs;
 using CloudDrive.Models;
+using CloudDrive.Models.Entities;
 using CloudDrive.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
@@ -33,18 +35,22 @@ namespace CloudDrive.Services
                                .Include(x => x.AuthorizedUsers)
                                .FirstOrDefaultAsync(x => x.Files.Any(f => f.Id == FileId));
 
-            if (user == null && !folder.IsAccessibleForEveryone)
-            {
-                return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
-            }     
-            
-            if (!folder.AuthorizedUsers.Any(x => x.UserId == user.Id))
+            var file = folder.Files.First(x => x.Id == FileId);
+
+            if (user == null && !folder.IsAccessibleForEveryone && !file.IsAccessibleForEveryone)
             {
                 return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
             }
 
-            var file = folder.Files.First(x => x.Id == FileId);
+            var accessList = folder.AuthorizedUsers.Where(x => x.UserId == user.Id);
+
+            if (accessList.Count() == 0 || !accessList.Any(x => x.AccessType == AccessEnum.Read))
+            {
+                return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
+            }
+
             var path = Path.Combine(_settings.StorageFolderPath, file.PhysicalFileName);
+
             var result = await _fileSystem.TryGetFile(path);
 
             if (!result.Success)
@@ -53,6 +59,11 @@ namespace CloudDrive.Services
             }
 
             return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
+        }
+
+        public async Task<Result<FileDTO>> UploadFileAsync(Guid id, IFormFile file, User user)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Result<FolderContent>> LoadFolderContentAsync(Guid FolderId, User user)
