@@ -38,6 +38,7 @@ namespace CloudDrive.Services
 
         public async Task<(bool Success, string Error)> TrySaveFile(string path, byte[] bytes)
         {
+            Console.WriteLine($"Saving file: {path}");
             await File.WriteAllBytesAsync(path, bytes);
             return (true, "");
         }
