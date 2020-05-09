@@ -204,6 +204,12 @@ namespace CloudDrive.Tests
             var downloadResponse = rest.DownloadData(downloadRequest);
 
             File.WriteAllBytes(downloadPath, downloadResponse);
+
+            foreach (var file in Directory.GetParent(downloadPath).GetFiles())
+            {
+                Console.WriteLine(file.FullName);
+            }
+
             var downloadedContent = File.ReadAllText(downloadPath);
             Assert.Equal(fileContent, downloadedContent);
         }
