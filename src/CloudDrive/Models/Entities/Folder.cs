@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CloudDrive.Models
+namespace CloudDrive.Models.Entities
 {
     public class Folder
 	{
@@ -22,7 +22,9 @@ namespace CloudDrive.Models
 		public List<UserAccess> AuthorizedUsers { get; private set; } = new List<UserAccess>();
 
 		public Guid OwnerId { get; set; }
-		
+
+		public Guid DiskHintId { get; set; }
+
 		public DateTime CreationDate { get; private set; } = DateTime.Now;
 	}
 }

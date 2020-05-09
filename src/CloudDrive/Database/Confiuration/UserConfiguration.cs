@@ -1,4 +1,5 @@
 ﻿using CloudDrive.Models;
+using CloudDrive.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

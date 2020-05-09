@@ -11,17 +11,17 @@ namespace CloudDrive.Models.ViewModels
         {
 
         }
-        public FileViewModel(Guid id, string name, long sizeAsKB)
+        public FileViewModel(Guid id, string name, long size)
         {
             Id = id;
             Name = name;
-            SizeAsKB = sizeAsKB;
+            Size = size;
         }
 
         public Guid Id { get; set; }
 
         public string Name { get; set; }
 
-        public long SizeAsKB { get; set; }
+        public long Size { get; set; }
     }
 }

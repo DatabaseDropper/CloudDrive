@@ -1,14 +1,13 @@
 ﻿using CloudDrive.Database;
 using CloudDrive.Interfaces;
 using CloudDrive.Miscs;
-using CloudDrive.Models;
 using CloudDrive.Models.Auth;
+using CloudDrive.Models.Entities;
 using CloudDrive.Models.Input;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CloudDrive.Services
@@ -65,7 +64,8 @@ namespace CloudDrive.Services
         public async Task<Result<AuthToken>> TrySignIn(LoginInput input)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => 
-                x.Email.ToLower() == input.LoginOrEmail ||
+                x.Email.ToLower() == input.LoginOrEmail.ToLower() 
+                ||
                 x.Login.ToLower() == input.LoginOrEmail.ToLower()
             );
 

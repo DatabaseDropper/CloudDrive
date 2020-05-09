@@ -17,6 +17,8 @@ using CloudDrive.Interfaces;
 using CloudDrive.Services;
 using Microsoft.AspNetCore.Identity;
 using CloudDrive.Models;
+using CloudDrive.Miscs;
+using CloudDrive.Models.Entities;
 
 namespace CloudDrive
 {
@@ -24,7 +26,7 @@ namespace CloudDrive
     {
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, Context context)
         {
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             app.UseSwagger();
@@ -69,16 +71,41 @@ namespace CloudDrive
         {
             services.AddTransient<ITokenService, JwtService>();
             services.AddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddTransient<IFileSystem, FileSystem>();
             services.AddTransient<AccountService>();
             services.AddTransient<FileService>();
             services.AddTransient<UserService>();
+            services.Configure<StorageSettings>(configuration.GetSection("Storage"));
 
             ConfigureJWT(services, configuration);
             services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterInputValidator>());
             services.AddDbContext<Context>(db_config);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cloud Drive API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cloud Drive API", Version = "v1" }); c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme."
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
         }
 
@@ -107,7 +134,6 @@ namespace CloudDrive
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
-
                 };
             });
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudDrive.Models
+namespace CloudDrive.Models.Entities
 {
     public class UserAccess
     {
@@ -11,5 +11,7 @@ namespace CloudDrive.Models
         public Guid FolderId { get; set; }
 
         public Folder Folder { get; set; }
+
+        public AccessEnum AccessType { get; internal set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudDrive.Models
+namespace CloudDrive.Models.Entities
 {
     public class File
     {
@@ -9,13 +9,12 @@ namespace CloudDrive.Models
 
         }
 
-        public File(string userFriendlyName, string physicalFileName, long sizeAsKB, Guid uploadedById, User uploadedBy)
+        public File(string userFriendlyName, string physicalFileName, long size, Guid uploadedById)
         {
             UserFriendlyName = userFriendlyName;
             PhysicalFileName = physicalFileName;
-            SizeAsKB = sizeAsKB;
+            Size = size;
             UploadedById = uploadedById;
-            UploadedBy = uploadedBy;
         }
 
         public Guid Id { get; private set; } = Guid.NewGuid();
@@ -24,7 +23,7 @@ namespace CloudDrive.Models
 
         public string PhysicalFileName { get; set; }
 
-        public long SizeAsKB { get; private set; }
+        public long Size { get; private set; }
 
         public bool IsAccessibleForEveryone { get; set; } = false;
 

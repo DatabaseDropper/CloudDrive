@@ -1,4 +1,5 @@
 ﻿using CloudDrive.Models;
+using CloudDrive.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,14 +12,14 @@ namespace CloudDrive.Database.Confiuration
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Name).IsRequired().HasMaxLength(128);
-            builder.Property(x => x.TotalSpaceAsKB).IsRequired();
-            builder.Property(x => x.UsedSpaceAsKB).IsRequired();
+            builder.Property(x => x.TotalSpace).IsRequired();
+            builder.Property(x => x.UsedSpace).IsRequired();
 
             builder.HasOne(x => x.Folder);
 
             builder.HasIndex(x => x.Id);
-            builder.HasIndex(x => x.UsedSpaceAsKB);
-            builder.HasIndex(x => x.TotalSpaceAsKB);
+            builder.HasIndex(x => x.UsedSpace);
+            builder.HasIndex(x => x.TotalSpace);
         }
     }
 }

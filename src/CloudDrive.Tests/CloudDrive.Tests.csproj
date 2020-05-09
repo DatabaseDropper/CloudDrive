@@ -20,4 +20,8 @@
     <ProjectReference Include="..\CloudDrive\CloudDrive.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Storage\" />
+  </ItemGroup>
+
 </Project>

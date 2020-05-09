@@ -1,5 +1,6 @@
 ﻿using CloudDrive.Database;
 using CloudDrive.Models;
+using CloudDrive.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,12 @@ namespace CloudDrive.Services
             _context = context;
         }
 
-        public async Task<User> TryGetUserAsync(Guid id)
+        public async Task<User> TryGetUserAsync(Guid? id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        }
+            if (id == null)
+                return null;
+
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }      
     }
 }

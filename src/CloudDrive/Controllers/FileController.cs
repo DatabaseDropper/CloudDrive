@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Security.Claims;
+using System.Net.Mime;
 using System.Threading.Tasks;
-using CloudDrive.Interfaces;
-using CloudDrive.Models.Input;
+using CloudDrive.Miscs;
 using CloudDrive.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace CloudDrive.Controllers
 {
@@ -22,16 +23,43 @@ namespace CloudDrive.Controllers
             _userService = userService;
         }
 
-
-        [Authorize]
         [HttpGet("{Id}")]
-        public async Task<IActionResult> RegisterAsync(Guid Id)
+        public async Task<IActionResult> DownloadFile(Guid Id)
         {
-            var user = await _userService.TryGetUserAsync(UserId().Value);
+            var user = await _userService.TryGetUserAsync(UserId());
+            var result = await _fileService.DownloadFileAsync(Id, user);
 
-            var result = await _fileService.LoadFolderContentAsync(Id, user);
+            var mime = "";
 
-            return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(result.Errors);
+            if (result.Error == ErrorType.None)
+            {
+                new FileExtensionContentTypeProvider().TryGetContentType(result.Data.UserFriendlyName, out mime);
+                mime = mime ?? MediaTypeNames.Application.Octet;
+            }
+
+            return result.Error switch
+            {
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                ErrorType.Internal => StatusCode(StatusCodes.Status500InternalServerError ,result.Errors),
+                ErrorType.None => File(result.Data.Bytes, mime),
+                _ => BadRequest()
+            };
+        }      
+        
+        [HttpPost("{Id}")]
+        public async Task<IActionResult> UploadFile(Guid Id, IFormFile file)
+        {
+            var user = await _userService.TryGetUserAsync(UserId());
+
+            var result = await _fileService.UploadFileAsync(Id, file, user);
+
+            return result.Error switch
+            {
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                ErrorType.Internal => StatusCode(StatusCodes.Status500InternalServerError ,result.Errors),
+                ErrorType.None => Ok(result.Data),
+                _ => BadRequest()
+            };
         }
     }
 }
