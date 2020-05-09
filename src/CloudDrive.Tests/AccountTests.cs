@@ -205,11 +205,12 @@ namespace CloudDrive.Tests
 
             File.WriteAllBytes(downloadPath, downloadResponse);
 
+            Console.WriteLine("Listing files:");
             foreach (var file in Directory.GetParent(downloadPath).GetFiles())
             {
                 Console.WriteLine(file.FullName);
             }
-
+            Console.WriteLine("___________");
             var downloadedContent = File.ReadAllText(downloadPath);
             Assert.Equal(fileContent, downloadedContent);
         }
