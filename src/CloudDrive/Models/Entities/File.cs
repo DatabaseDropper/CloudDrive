@@ -9,13 +9,12 @@ namespace CloudDrive.Models.Entities
 
         }
 
-        public File(string userFriendlyName, string physicalFileName, long size, Guid uploadedById, User uploadedBy)
+        public File(string userFriendlyName, string physicalFileName, long size, Guid uploadedById)
         {
             UserFriendlyName = userFriendlyName;
             PhysicalFileName = physicalFileName;
             Size = size;
             UploadedById = uploadedById;
-            UploadedBy = uploadedBy;
         }
 
         public Guid Id { get; private set; } = Guid.NewGuid();

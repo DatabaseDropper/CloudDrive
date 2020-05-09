@@ -23,7 +23,7 @@ namespace CloudDrive.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> LoadUserFilesFromFolder(Guid Id)
         {
-            var user = await _userService.TryGetUserAsync(UserId().Value);
+            var user = await _userService.TryGetUserAsync(UserId());
 
             var result = await _fileService.LoadFolderContentAsync(Id, user);
 

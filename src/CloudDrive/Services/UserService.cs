@@ -18,8 +18,11 @@ namespace CloudDrive.Services
             _context = context;
         }
 
-        public async Task<User> TryGetUserAsync(Guid id)
+        public async Task<User> TryGetUserAsync(Guid? id)
         {
+            if (id == null)
+                return null;
+
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }      
     }

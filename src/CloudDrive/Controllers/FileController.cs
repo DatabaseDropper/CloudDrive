@@ -26,7 +26,7 @@ namespace CloudDrive.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> DownloadFile(Guid Id)
         {
-            var user = await _userService.TryGetUserAsync(UserId().Value);
+            var user = await _userService.TryGetUserAsync(UserId());
             var result = await _fileService.DownloadFileAsync(Id, user);
 
             var mime = "";
@@ -46,10 +46,11 @@ namespace CloudDrive.Controllers
             };
         }      
         
-        [HttpPost("Upload/{Id}")]
+        [HttpPost("{Id}")]
         public async Task<IActionResult> UploadFile(Guid Id, IFormFile file)
         {
-            var user = await _userService.TryGetUserAsync(UserId().Value);
+            var user = await _userService.TryGetUserAsync(UserId());
+
             var result = await _fileService.UploadFileAsync(Id, file, user);
 
             return result.Error switch

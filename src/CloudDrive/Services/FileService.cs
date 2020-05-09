@@ -43,9 +43,9 @@ namespace CloudDrive.Services
                 return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
             }
 
-            var canAccess = folder.AuthorizedUsers.Any(x => x.UserId == user.Id && x.AccessType == AccessEnum.Read);
+            var isOnSharedList = folder.AuthorizedUsers.Any(x => x.UserId == user.Id && x.AccessType == AccessEnum.Read);
 
-            if (!canAccess)
+            if (!isOnSharedList && file.UploadedById != user.Id)
             {
                 return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
             }
@@ -66,6 +66,9 @@ namespace CloudDrive.Services
         {
             if (user == null)
                 return new Result<FileViewModel>(false, null, "Unauthorized", ErrorType.Unauthorized);
+
+            if (file is null)
+                return new Result<FileViewModel>(false, null, "File is not sent", ErrorType.BadRequest);
 
             var folder = await _context
                                .Folders
@@ -101,9 +104,10 @@ namespace CloudDrive.Services
                 }
             }
 
-            var newFile = new Models.Entities.File(file.FileName, newFileName, file.Length, user.Id, user);
+            var newFile = new Models.Entities.File(file.FileName, newFileName, file.Length, user.Id);
             folderDisk.UsedSpace += file.Length;
             folder.Files.Add(newFile);
+            await _context.AddAsync(newFile);
 
             await _context.SaveChangesAsync();
 
