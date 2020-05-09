@@ -36,7 +36,7 @@ namespace CloudDrive.Services
                                .Include(x => x.AuthorizedUsers)
                                .FirstOrDefaultAsync(x => x.Files.Any(f => f.Id == FileId));
 
-            var file = folder.Files.First(x => x.Id == FileId);
+            var file = folder.Files.Single(x => x.Id == FileId);
 
             if (user == null && !folder.IsAccessibleForEveryone && !file.IsAccessibleForEveryone)
             {
