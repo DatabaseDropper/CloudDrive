@@ -37,6 +37,16 @@ namespace CloudDrive.Controllers
             };
         }
 
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> DeleteFolder(Guid Id)
+        {
+            var user = await _userService.TryGetUserAsync(UserId());
+
+            // TODO
+
+            return Ok();
+        }
+
         [HttpGet("{Id}")]
         public async Task<IActionResult> LoadUserFilesFromFolder(Guid Id)
         {
