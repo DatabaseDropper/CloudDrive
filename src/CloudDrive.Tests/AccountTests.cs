@@ -160,6 +160,55 @@ namespace CloudDrive.Tests
             Assert.Empty(obj2.Files);
             Assert.Empty(obj2.Folders);
         }
+        
+        [Fact]
+        public async Task Register_And_CreateNewFolderSuccessfully()
+        {
+            // Arrange
+            var request = new RestRequest("api/v1/Account/Register", Method.POST, DataFormat.Json);
+
+            var registerData = new RegisterInput
+            {
+                Email = "test@localhost.test",
+                Login = "abcdefg12353",
+                Password = "asd123423534",
+                UserName = "user_test"
+            };
+
+            request.AddJsonBody(registerData);
+
+            // Act
+            var response = await rest.ExecuteAsync(request);
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("token", response.Content);
+
+            var users = _context.Users.ToList();
+
+            Assert.Single(users);
+            // Step 2
+            var obj = JsonConvert.DeserializeObject<AuthToken>(response.Content);
+
+            var request2 = new RestRequest($"api/v1/Folder/{obj.DiskInfo.FolderId}", Method.POST, DataFormat.Json);
+            request2.AddJsonBody(new CreateFolderInput { Name = "test" });
+            request2.AddHeader("Authorization", $"Bearer {obj.Token}");
+            response = await rest.ExecuteAsync(request2);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);       
+            
+            var request3 = new RestRequest($"api/v1/Folder/{obj.DiskInfo.FolderId}", Method.GET, DataFormat.Json);
+            request3.AddHeader("Authorization", $"Bearer {obj.Token}");
+            response = await rest.ExecuteAsync(request3);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var obj2 = JsonConvert.DeserializeObject<FolderContent>(response.Content);
+
+            Assert.Empty(obj2.Files);
+            Assert.NotEmpty(obj2.Folders);
+            Assert.Contains(obj2.Folders, x => x.Name == "test");
+            Assert.DoesNotContain(obj2.Folders, x => x.Name == "Folder");
+        }
 
         [Fact]
         public async Task Download_Your_File_ShouldBeOk()
