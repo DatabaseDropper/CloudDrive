@@ -60,6 +60,16 @@ namespace CloudDrive.Controllers
                 ErrorType.None => Ok(result.Data),
                 _ => BadRequest()
             };
+        }    
+        
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> DeleteFile(Guid Id)
+        {
+            var user = await _userService.TryGetUserAsync(UserId());
+
+            // TODO
+
+            return Ok();
         }
     }
 }
