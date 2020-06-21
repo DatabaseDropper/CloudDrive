@@ -5,9 +5,23 @@ namespace CloudDrive.Models.Entities
 {
     public class Folder
 	{
+		private Folder()
+		{
+
+		}
+
+		public Folder(Folder parentFolder, Guid ownerId, Guid diskHintId, string name = "Folder")
+		{
+			Name = name;
+			ParentFolder = parentFolder;
+			ParentFolderId = parentFolder?.Id;
+			OwnerId = ownerId;
+			DiskHintId = diskHintId;
+		}
+
 		public Guid Id { get; private set; } = Guid.NewGuid();
 
-		public string Name { get; set; } = "Folder";
+		public string Name { get; set; }
 
 		public bool IsAccessibleForEveryone { get; set; } = false;
 

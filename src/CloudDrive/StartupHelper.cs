@@ -78,8 +78,9 @@ namespace CloudDrive
             services.Configure<StorageSettings>(configuration.GetSection("Storage"));
 
             ConfigureJWT(services, configuration);
+
             services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RegisterInputValidator>());
-            services.AddDbContext<Context>(db_config);
+            services.AddDbContext<Context>(db_config, ServiceLifetime.Transient);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cloud Drive API", Version = "v1" }); c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
