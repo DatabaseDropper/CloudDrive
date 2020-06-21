@@ -3,6 +3,7 @@ using CloudDrive.Interfaces;
 using CloudDrive.Miscs;
 using CloudDrive.Models;
 using CloudDrive.Models.Entities;
+using CloudDrive.Models.Input;
 using CloudDrive.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,46 @@ namespace CloudDrive.Services
             }
 
             return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
+        }
+
+        public async Task<Result<CreateFolderResult>> CreateFolderAsync(Guid id, CreateFolderInput input, User user)
+        {
+            if (user == null)
+                return new Result<CreateFolderResult>(false, null, "Unauthorized", ErrorType.Unauthorized);
+
+            if (input is null || id == Guid.Empty)
+                return new Result<CreateFolderResult>(false, null, "Data is not received", ErrorType.BadRequest);
+
+
+            var folder = await _context
+                                .Folders
+                                .Include(x => x.Folders)
+                                .FirstOrDefaultAsync(x => x.Id == id);
+
+            var disk = await _context
+                                .Disks
+                                .Include(x => x.Owner)
+                                .FirstOrDefaultAsync(x => x.OwnerId == user.Id && x.Id == folder.DiskHintId);
+
+            if (folder == null)
+            {
+                return new Result<CreateFolderResult>(false, null, "Parent folder not found", ErrorType.BadRequest);
+            }
+                   
+            if (disk == null)
+            {
+                return new Result<CreateFolderResult>(false, null, "Disk not found", ErrorType.BadRequest);
+            }
+
+            var newFolder = new Folder(folder, user.Id, disk.Id, input.Name);
+
+            await _context.AddAsync(newFolder);
+
+            await _context.SaveChangesAsync();
+
+            var result = new CreateFolderResult { Id = newFolder.Id, Name = newFolder.Name };
+
+            return new Result<CreateFolderResult>(true, result);
         }
 
         public async Task<Result<FileViewModel>> UploadFileAsync(Guid id, IFormFile file, User user)
@@ -132,7 +173,7 @@ namespace CloudDrive.Services
             }
 
             if (user == null)
-                return new Result<FolderContent>(false, null, "Unauthorized.", ErrorType.BadRequest);
+                return new Result<FolderContent>(false, null, "Unauthorized.", ErrorType.Unauthorized);
 
             if (user.Id == folder.OwnerId || folder.AuthorizedUsers.Any(x => x.UserId == user.DiskId))
             {

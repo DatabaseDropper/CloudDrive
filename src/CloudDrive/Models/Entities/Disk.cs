@@ -37,7 +37,7 @@ namespace CloudDrive.Models.Entities
 		public void ResizeDisk(long DesiredSize)
 		{
 			if (DesiredSize < 0)
-				throw new Exception("Desired disk size must be greaeter or equal to 0");
+				throw new Exception("Desired disk size must be greater or equal to 0");
 
 			TotalSpace = DesiredSize;
 		}
@@ -45,13 +45,12 @@ namespace CloudDrive.Models.Entities
 		public static Disk CreateDisk(long SizeAsKB, User user)
 		{
 			var disk = new Disk(SizeAsKB);
-			var folder = new Folder();
+			var folder = new Folder(null, user.Id, disk.Id);
 			disk.Owner = user;
 			disk.OwnerId = user.Id;
 			disk.Folder = folder;
 			disk.FolderId = folder.Id;
 			disk.Folder.OwnerId = user.Id;
-			folder.DiskHintId = disk.Id;
 			return disk;
 		}
 	}
