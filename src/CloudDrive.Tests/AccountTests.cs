@@ -258,6 +258,53 @@ namespace CloudDrive.Tests
             Assert.Equal(fileContent, downloadedContent);
         }
 
+        [Fact]
+        public async Task RegisterTest_AndGetAccountInfo_ShouldBeOk()
+        {
+            // Arrange
+            var request = new RestRequest("api/v1/Account/Register", Method.POST, DataFormat.Json);
+
+            var registerData = new RegisterInput
+            {
+                Email = "test@localhost.test",
+                Login = "abcdefg12353",
+                Password = "asd123423534",
+                UserName = "user_test"
+            };
+
+            request.AddJsonBody(registerData);
+
+            // Act
+            var response = await rest.ExecuteAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("token", response.Content);
+
+            var response_data = JsonConvert.DeserializeObject<AuthToken>(response.Content);
+
+            var users = _context.Users.ToList();
+
+            Assert.Single(users);
+            
+            // ______________________________________
+
+            var request2 = new RestRequest("api/v1/Account/", Method.GET);
+            request2.AddHeader("Authorization", $"Bearer {response_data.Token}");
+            var response2 = await rest.ExecuteAsync(request2);
+            var data = JsonConvert.DeserializeObject<AccountInfoViewModel>(response2.Content);
+
+            Assert.Equal(HttpStatusCode.OK, response2.StatusCode);
+
+            Assert.Equal("Disk", data.DiskName);
+            Assert.Equal("user_test", data.UserName);
+            Assert.True(data.MainFolderId != Guid.Empty);
+            Assert.True(data.DiskId != Guid.Empty);
+            Assert.True(data.UsedSpace == 0);
+            Assert.True(data.FreeSpace > 0);
+            Assert.True(data.TotalSpace > 0);
+        }
+
         private void CreatePhysicalFile(string path, string content)
         {
             File.WriteAllText(path, content);
