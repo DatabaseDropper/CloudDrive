@@ -4,6 +4,7 @@ using CloudDrive.Miscs;
 using CloudDrive.Models.Auth;
 using CloudDrive.Models.Entities;
 using CloudDrive.Models.Input;
+using CloudDrive.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -59,6 +60,29 @@ namespace CloudDrive.Services
             }
 
             return new Result<AuthToken>(true, token);
+        }
+
+        public async Task<Result<AccountInfoViewModel>> ObtainAccountInfo(User user)
+        {
+            if (user == null)
+            {
+                return new Result<AccountInfoViewModel>(false, null, "Data is not received", ErrorType.BadRequest);
+            }
+
+            var disk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == user.DiskId);
+
+            var result = new AccountInfoViewModel
+            {
+                DiskId = disk.Id,
+                DiskName = disk.Name,
+                FreeSpace = disk.FreeSpace,
+                TotalSpace = disk.TotalSpace,
+                UsedSpace = disk.UsedSpace,
+                MainFolderId = disk.FolderId,
+                UserName = user.Username
+            };
+
+            return new Result<AccountInfoViewModel>(true, result);
         }
 
         public async Task<Result<AuthToken>> TrySignIn(LoginInput input)
