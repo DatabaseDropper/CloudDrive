@@ -67,9 +67,15 @@ namespace CloudDrive.Controllers
         {
             var user = await _userService.TryGetUserAsync(UserId());
 
-            // TODO
+            var result = await _fileService.DeleteFileAsync(user, Id);
 
-            return Ok();
+            return result.Error switch
+            {
+                ErrorType.None => Ok(result.Data),
+                ErrorType.NotFound => NotFound(result.Errors),
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                _ => BadRequest()
+            };
         }
     }
 }

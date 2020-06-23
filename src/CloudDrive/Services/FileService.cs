@@ -69,6 +69,31 @@ namespace CloudDrive.Services
             return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
         }
 
+        public async Task<Result<bool>> DeleteFileAsync(User user, Guid id)
+        {
+            if (user == null)
+                return new Result<bool>(false, false, "Unauthorized", ErrorType.Unauthorized);
+
+            var folder = await _context
+                                    .Folders
+                                    .Include(x => x.Files)
+                                    .FirstOrDefaultAsync(x => x.Files.Any(f => f.Id == id));
+
+            if (folder is null)
+                return new Result<bool>(false, false, "Not found", ErrorType.NotFound);
+
+            var file = folder.Files.Single(x => x.Id == id);
+
+            if (folder.OwnerId != user.Id)
+                return new Result<bool>(false, false, "No sufficent permissions", ErrorType.Unauthorized);
+
+            file.IsDeleted = true;
+
+            await _context.SaveChangesAsync();
+
+            return new Result<bool>(true, true);
+        }
+
         public async Task<Result<CreateFolderResult>> CreateFolderAsync(Guid id, CreateFolderInput input, User user)
         {
             if (user == null)
