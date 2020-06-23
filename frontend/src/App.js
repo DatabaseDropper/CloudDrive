@@ -1,25 +1,38 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-function App() {
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom';
+
+import Page404 from './Views/Pages/404';
+
+const App = ({state}) => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="/logo.png" className="App-logo" alt="logo" />
-        <p>App is load ;)</p>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+        {false ? //TODO: sprawdzanie czy uzytkownik jest zalogowany po zrobieniu funkcjonalności logowania i rejestracji
+              <Switch>
+                  <Route path="*">
+                    <Page404/>
+                  </Route>
+              </Switch>
+            :
+              <Switch>
+                  <Route path="*">
+                      <Page404/>
+                  </Route>
+              </Switch>
+        }
+    </Router>
   );
-}
+};
 
-export default App;
+const mapStateToProps = state => ({
+  state: state
+});
+
+export default connect(
+  mapStateToProps
+)(App);
