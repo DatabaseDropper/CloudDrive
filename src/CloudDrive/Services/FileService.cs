@@ -37,7 +37,13 @@ namespace CloudDrive.Services
                                .Include(x => x.AuthorizedUsers)
                                .FirstOrDefaultAsync(x => x.Files.Any(f => f.Id == FileId));
 
-            var file = folder.Files.Single(x => x.Id == FileId);
+            if (folder == null)
+                return new Result<FileDTO>(false, null, "File not found", ErrorType.NotFound);
+
+            var file = folder.Files.SingleOrDefault(x => x.Id == FileId);
+
+            if (file == null)
+                return new Result<FileDTO>(false, null, "File not found", ErrorType.NotFound);
 
             if (user == null && !folder.IsAccessibleForEveryone && !file.IsAccessibleForEveryone)
             {
@@ -61,6 +67,37 @@ namespace CloudDrive.Services
             }
 
             return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
+        }
+
+        public async Task<Result<bool>> DeleteFileAsync(User user, Guid id)
+        {
+            if (user == null)
+                return new Result<bool>(false, false, "Unauthorized", ErrorType.Unauthorized);
+
+            var folder = await _context
+                                    .Folders
+                                    .Include(x => x.Files)
+                                    .FirstOrDefaultAsync(x => x.Files.Any(f => f.Id == id));
+
+            if (folder is null)
+                return new Result<bool>(false, false, "Not found", ErrorType.NotFound);
+
+            var file = folder.Files.Single(x => x.Id == id);
+
+            var disk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == folder.DiskHintId && x.OwnerId == user.Id);
+
+            if (disk is null)
+                return new Result<bool>(false, false, "Not found", ErrorType.NotFound);
+
+            if (folder.OwnerId != user.Id)
+                return new Result<bool>(false, false, "No sufficent permissions", ErrorType.Unauthorized);
+
+            file.IsDeleted = true;
+            disk.UsedSpace -= file.Size;
+
+            await _context.SaveChangesAsync();
+
+            return new Result<bool>(true, true);
         }
 
         public async Task<Result<CreateFolderResult>> CreateFolderAsync(Guid id, CreateFolderInput input, User user)

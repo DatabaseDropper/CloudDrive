@@ -32,5 +32,7 @@ namespace CloudDrive.Models.Entities
         public User UploadedBy { get; private set; }
 
         public DateTime UploadedAt { get; private set; } = DateTime.Now;
+
+        public bool IsDeleted { get; set; } = false;
     }
 }
