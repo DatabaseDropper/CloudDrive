@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import "antd/dist/antd.css";
+
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from 'react-router-dom';
 
-import Page404 from './Views/Pages/404';
+import Page_404 from './Views/Pages/404';
 
 const App = ({state}) => {
   return (
@@ -15,13 +17,13 @@ const App = ({state}) => {
         {false ? //TODO: sprawdzanie czy uzytkownik jest zalogowany po zrobieniu funkcjonalności logowania i rejestracji
               <Switch>
                   <Route path="*">
-                    <Page404/>
+                    <Page_404/>
                   </Route>
               </Switch>
             :
               <Switch>
                   <Route path="*">
-                      <Page404/>
+                      <Page_404/>
                   </Route>
               </Switch>
         }
