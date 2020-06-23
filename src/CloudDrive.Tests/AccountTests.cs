@@ -256,6 +256,74 @@ namespace CloudDrive.Tests
 
             var downloadedContent = File.ReadAllText(downloadPath);
             Assert.Equal(fileContent, downloadedContent);
+        }    
+        
+        [Fact]
+        public async Task Delete_File_Successfully()
+        {
+            // Arrange
+
+            var registerData = new RegisterInput
+            {
+                Email = "test@localhost.test",
+                Login = "abcdefg12353",
+                Password = "asd123423534",
+                UserName = "user_test"
+            };
+
+            var fileContent = "abc";
+            var path = Path.Combine(TestFilesFolderName, "text7.txt");
+            CreatePhysicalFile(path, fileContent);
+
+            // create account 
+            var request = new RestRequest("api/v1/Account/Register", Method.POST, DataFormat.Json);
+            request.AddJsonBody(registerData);
+            var response = await rest.ExecuteAsync(request);
+            var response_data = JsonConvert.DeserializeObject<AuthToken>(response.Content);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // upload file
+            var fileRequest = new RestRequest($"api/v1/File/{response_data.DiskInfo.FolderId}", Method.POST);
+            fileRequest.RequestFormat = DataFormat.Json;
+            fileRequest.AddHeader("Content-Type", "multipart/form-data");
+            fileRequest.AddFile("file", path);
+            fileRequest.AddHeader("Authorization", $"Bearer {response_data.Token}");
+
+            var fileResponse = await rest.ExecuteAsync(fileRequest);
+            Assert.Equal(HttpStatusCode.OK, fileResponse.StatusCode);
+            var fileResponseData = JsonConvert.DeserializeObject<FileViewModel>(fileResponse.Content);
+
+            // assert file exists
+
+            var ensure_exists_request = new RestRequest($"api/v1/Folder/{response_data.DiskInfo.FolderId}", Method.GET, DataFormat.Json);
+            ensure_exists_request.AddHeader("Authorization", $"Bearer {response_data.Token}");
+            var ensure_exists_response = await rest.ExecuteAsync(ensure_exists_request);
+
+            Assert.Equal(HttpStatusCode.OK, ensure_exists_response.StatusCode);
+
+            var obj2 = JsonConvert.DeserializeObject<FolderContent>(ensure_exists_response.Content);
+
+            Assert.NotEmpty(obj2.Files);
+
+            // delete file
+
+            var delete_request = new RestRequest($"api/v1/File/{fileResponseData.Id}", Method.DELETE);
+            delete_request.AddHeader("Authorization", $"Bearer {response_data.Token}");
+            var deleteResponse = await rest.ExecuteAsync(delete_request);
+
+            Assert.Equal(HttpStatusCode.OK, deleteResponse.StatusCode);
+
+            // assert file is removed
+
+            var ensure_deleted_request = new RestRequest($"api/v1/Folder/{response_data.DiskInfo.FolderId}", Method.GET, DataFormat.Json);
+            ensure_deleted_request.AddHeader("Authorization", $"Bearer {response_data.Token}");
+            var ensure_deleted_response = await rest.ExecuteAsync(ensure_deleted_request);
+
+            Assert.Equal(HttpStatusCode.OK, ensure_deleted_response.StatusCode);
+
+            obj2 = JsonConvert.DeserializeObject<FolderContent>(ensure_deleted_response.Content);
+
+            Assert.Empty(obj2.Files);
         }
 
         [Fact]
