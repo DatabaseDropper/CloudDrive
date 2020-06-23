@@ -37,7 +37,13 @@ namespace CloudDrive.Services
                                .Include(x => x.AuthorizedUsers)
                                .FirstOrDefaultAsync(x => x.Files.Any(f => f.Id == FileId));
 
-            var file = folder.Files.Single(x => x.Id == FileId);
+            if (folder == null)
+                return new Result<FileDTO>(false, null, "File not found", ErrorType.NotFound);
+
+            var file = folder.Files.SingleOrDefault(x => x.Id == FileId);
+
+            if (file == null)
+                return new Result<FileDTO>(false, null, "File not found", ErrorType.NotFound);
 
             if (user == null && !folder.IsAccessibleForEveryone && !file.IsAccessibleForEveryone)
             {
