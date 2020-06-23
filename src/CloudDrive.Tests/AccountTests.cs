@@ -305,6 +305,16 @@ namespace CloudDrive.Tests
 
             Assert.NotEmpty(obj2.Files);
 
+            // get disk size
+
+            var disk_info_request1 = new RestRequest($"api/v1/Account", Method.GET);
+            disk_info_request1.AddHeader("Authorization", $"Bearer {response_data.Token}");
+            var disk_info_response1 = await rest.ExecuteAsync(disk_info_request1);
+
+            Assert.Equal(HttpStatusCode.OK, disk_info_response1.StatusCode);
+
+            var diskResult1 = JsonConvert.DeserializeObject<AccountInfoViewModel>(disk_info_response1.Content);
+
             // delete file
 
             var delete_request = new RestRequest($"api/v1/File/{fileResponseData.Id}", Method.DELETE);
@@ -324,6 +334,19 @@ namespace CloudDrive.Tests
             obj2 = JsonConvert.DeserializeObject<FolderContent>(ensure_deleted_response.Content);
 
             Assert.Empty(obj2.Files);
+
+            // get disk size
+
+            var disk_info_request2 = new RestRequest($"api/v1/Account", Method.GET);
+            disk_info_request2.AddHeader("Authorization", $"Bearer {response_data.Token}");
+            var disk_info_response2 = await rest.ExecuteAsync(disk_info_request2);
+
+            Assert.Equal(HttpStatusCode.OK, disk_info_response1.StatusCode);
+
+            var diskResult2 = JsonConvert.DeserializeObject<AccountInfoViewModel>(disk_info_response2.Content);
+
+            Assert.True(diskResult2.FreeSpace > diskResult1.FreeSpace);
+            Assert.True(diskResult2.UsedSpace < diskResult1.UsedSpace);
         }
 
         [Fact]

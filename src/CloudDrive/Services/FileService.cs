@@ -84,10 +84,16 @@ namespace CloudDrive.Services
 
             var file = folder.Files.Single(x => x.Id == id);
 
+            var disk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == folder.DiskHintId && x.OwnerId == user.Id);
+
+            if (disk is null)
+                return new Result<bool>(false, false, "Not found", ErrorType.NotFound);
+
             if (folder.OwnerId != user.Id)
                 return new Result<bool>(false, false, "No sufficent permissions", ErrorType.Unauthorized);
 
             file.IsDeleted = true;
+            disk.UsedSpace -= file.Size;
 
             await _context.SaveChangesAsync();
 
