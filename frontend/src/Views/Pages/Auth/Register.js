@@ -1,27 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import { Form, Input, Button, Typography } from 'antd';
+
+import Component_Form_AbstractForm from './../../Components/Form/AbstractForm';
 import Layout_NoAuth from '../../Layouts/NoAuth';
 
-class Page_Auth_Register extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {submitProcess: false, fields: {}, errors: []};
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleChange(event) {
-        let newStateFields = this.state.fields;
-        newStateFields[event.target.name] = (event.target.type === 'checkbox' ? event.target.checked : event.target.value);
-        this.setState({ fields: newStateFields });
-    }
-    
-    handleSubmit(event) {
-    }
-
+class Page_Auth_Register extends Component_Form_AbstractForm {
     render() {
         return (
             <Layout_NoAuth pageTitle="Rejestracja">
