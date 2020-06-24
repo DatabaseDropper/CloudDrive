@@ -4,7 +4,7 @@ import store from './../Store'
 
 class Service_Api {
     getPermalink(url) {
-        return Config.apiUrl + url;
+        return Config.get('apiUrl') + url;
     }
 
     fetch(url, settings) {
@@ -28,5 +28,5 @@ class Service_Api {
     }
 }
 
-const inst = new ApiService();
+const inst = new Service_Api();
 export default inst;

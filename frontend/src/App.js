@@ -17,7 +17,7 @@ import Page_404 from './Views/Pages/404';
 const App = ({state}) => {
     return (
         <Router>
-            {false ? //TODO: sprawdzanie czy uzytkownik jest zalogowany po zrobieniu funkcjonalności logowania i rejestracji
+            {state.get('authData').token.length > 0 ?
                 <Switch>
                     <Route path="*">
                         <Page_404/>
