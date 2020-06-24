@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CloudDrive.Services
@@ -28,15 +29,19 @@ namespace CloudDrive.Services
 
         public async Task<Result<AuthToken>> TryRegister(RegisterInput input)
         {
-            var errors = new List<string>();
+            var errors = new Dictionary<string, List<string>>()
+            {
+                { "email", new List<string>() },
+                { "login", new List<string>() },
+            };
 
             if (await _context.Users.AnyAsync(x => x.Email.ToLower() == input.Email.ToLower()))
-                errors.Add("This e-mail address is already being used.");
+                errors["email"].Add("This e-mail address is already being used.");
 
             if (await _context.Users.AnyAsync(x => x.Login.ToLower() == input.Login.ToLower()))
-                errors.Add("This login is already being used.");
+                errors["login"].Add("This login is already being used.");
 
-            if (errors.Count > 0)
+            if (errors.Any(x => x.Value.Any()))
                 return new Result<AuthToken>(false, null, errors, ErrorType.BadRequest);
 
             var user = User.CreateUser(input.Login, input.UserName, input.Email, 50.MBtoKB());

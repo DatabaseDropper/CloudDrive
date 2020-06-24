@@ -4,11 +4,22 @@ namespace CloudDrive.Miscs
 {
     public class Result<T>
     {
-        public Result(bool success, T data, List<string> errors, ErrorType type)
+        public Result(bool success, T data, Dictionary<string, List<string>> errors, ErrorType type)
         {
             Success = success;
             Data = data;
             Errors = errors;
+            Error = type;
+        }       
+        
+        public Result(bool success, T data, List<string> errors, ErrorType type)
+        {
+            Success = success;
+            Data = data;
+            Errors = new Dictionary<string, List<string>>
+            {
+                { "message", errors }
+            };
             Error = type;
         }      
         
@@ -16,7 +27,12 @@ namespace CloudDrive.Miscs
         {
             Success = success;
             Data = data;
-            Errors = new List<string> { error };
+            Errors =
+            new Dictionary<string, List<string>>
+            {
+                { "message", new List<string> { error }}
+            };
+            
             Error = type;
         }
 
@@ -26,7 +42,7 @@ namespace CloudDrive.Miscs
             Data = data;
         }
 
-        public List<string> Errors = new List<string>();
+        public Dictionary<string, List<string>> Errors = new Dictionary<string, List<string>>();
 
         public bool Success { get; set; }
 
