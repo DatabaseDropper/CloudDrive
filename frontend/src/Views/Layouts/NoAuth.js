@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Layout, Typography, Row, Col, Input } from 'antd';
+import { Typography, Row, Col } from 'antd';
 
 const Layout_NoAuth = (props) => {
     return (
         <main style={{ padding: '0 20px' }}>
             <Row align="middle" justify="center" style={{ minHeight: '100vh' }}>
-                <Col span={24} md={12}>
+                <Col span={24} md={8}>
                     <div style={{textAlign: 'center'}}>
                         <Typography.Title>
                             <img src="/logo.png" alt="Cloud Drive" />
