@@ -39,7 +39,7 @@ namespace CloudDrive.Services
             );
 
             var result = new JwtSecurityTokenHandler().WriteToken(token);
-            var authToken = new AuthToken(result, user.Login, ((DateTimeOffset)expiresAt).ToUnixTimeSeconds());
+            var authToken = new AuthToken(result, user.Login, ((DateTimeOffset)expiresAt).ToUnixTimeSeconds(), user.Username);
             return authToken;
         }
     }
