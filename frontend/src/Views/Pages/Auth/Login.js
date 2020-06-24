@@ -62,7 +62,7 @@ class Page_Auth_Login extends Component_Form_AbstractForm {
 
     render() {
         return (
-            <Layout_NoAuth pageTitle="Rejestracja">
+            <Layout_NoAuth pageTitle="Logowanie">
                 <Typography.Paragraph>
                     Nie masz konta: <Link to="/rejestracja">Zarejestruj się</Link>
                 </Typography.Paragraph>

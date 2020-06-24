@@ -12,13 +12,17 @@ import {
 import Page_Auth_Login from './Views/Pages/Auth/Login';
 import Page_Auth_Register from './Views/Pages/Auth/Register';
 
+import Page_Folder from './Views/Pages/Folder';
 import Page_404 from './Views/Pages/404';
 
 const App = ({state}) => {
     return (
         <Router>
-            {state.get('authData').token.length > 0 ?
+            {(state.has('authData') && state.get('authData').token.length > 0) ?
                 <Switch>
+                    <Route exact path="/">
+                        <Page_Folder folderId={state.get('authData').diskInfo.folderId} />
+                    </Route>
                     <Route path="*">
                         <Page_404/>
                     </Route>
