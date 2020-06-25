@@ -30,7 +30,7 @@ namespace CloudDrive.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Auth:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiresAt = DateTime.Now.AddMinutes(30);
+            var expiresAt = DateTime.Now.AddHours(3);
             var token = new JwtSecurityToken
             (
                 claims: claims,
