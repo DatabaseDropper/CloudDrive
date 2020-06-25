@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,6 +70,63 @@ namespace CloudDrive.Services
             return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
         }
 
+        public async Task<Result<bool>> DeleteFolderAsync(User user, Guid id)
+        {
+            if (user == null)
+                return new Result<bool>(false, false, "Unauthorized", ErrorType.Unauthorized);
+
+            var folder = _context
+                         .Folders
+                         .Include(x => x.Files)
+                         .Include(x => x.Folders)
+                         .ThenInclude(x => x.Folders)
+                         .AsEnumerable()
+                         .FirstOrDefault(x => x.Id == id);
+
+            if (folder is null)
+                return new Result<bool>(false, false, "Not found", ErrorType.NotFound);
+
+            var disk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == folder.DiskHintId && x.OwnerId == user.Id);
+
+            if (disk is null)
+                return new Result<bool>(false, false, "Not found", ErrorType.NotFound);
+
+            if (folder.OwnerId != user.Id)
+                return new Result<bool>(false, false, "No sufficent permissions", ErrorType.Unauthorized);
+
+            var filesToDelete = new List<Models.Entities.File>();
+            var foldersToDelete = new List<Folder>();
+
+            var stack = new Stack<Folder>();
+            stack.Push(folder);
+            foldersToDelete.Add(folder);
+
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+
+                foreach (var f in current.Folders)
+                {
+                    foldersToDelete.Add(f);
+                    stack.Push(f);
+                }
+
+                filesToDelete.AddRange(current.Files);
+            }
+
+            foreach (var file in filesToDelete)
+            {
+                disk.UsedSpace -= file.Size;
+            }
+
+            _context.Files.RemoveRange(filesToDelete);
+            _context.Folders.RemoveRange(foldersToDelete);
+
+            await _context.SaveChangesAsync();
+
+            return new Result<bool>(true, true);
+        }
+
         public async Task<Result<bool>> DeleteFileAsync(User user, Guid id)
         {
             if (user == null)
@@ -92,9 +150,9 @@ namespace CloudDrive.Services
             if (folder.OwnerId != user.Id)
                 return new Result<bool>(false, false, "No sufficent permissions", ErrorType.Unauthorized);
 
-            file.IsDeleted = true;
             disk.UsedSpace -= file.Size;
 
+            _context.Files.Remove(file);
             await _context.SaveChangesAsync();
 
             return new Result<bool>(true, true);
@@ -194,12 +252,14 @@ namespace CloudDrive.Services
 
         public async Task<Result<FolderContent>> LoadFolderContentAsync(Guid FolderId, User user)
         {
-            var folder = await _context
+            var folder = _context
                                .Folders
                                .Include(x => x.Folders)
+                               .ThenInclude(x => x.Folders)
                                .Include(x => x.Files)
                                .Include(x => x.AuthorizedUsers)
-                               .FirstOrDefaultAsync(x => x.Id == FolderId);
+                               .AsEnumerable()
+                               .FirstOrDefault(x => x.Id == FolderId);
 
             if (folder == null)
                 return new Result<FolderContent>(false, null, "Folder not found.", ErrorType.NotFound);
@@ -222,9 +282,22 @@ namespace CloudDrive.Services
 
         private static Result<FolderContent> MapFolderToViewModel(Folder folder)
         {
+            var result = FolderMapperHelper(folder);
+            return new Result<FolderContent>(true, result);
+        }
+
+        private static FolderContent FolderMapperHelper(Folder folder)
+        {
             var files = folder.Files.Select(x => new FileViewModel(x.Id, x.UserFriendlyName, x.Size)).ToList();
-            var folders = folder.Folders.Select(x => new FolderViewModel(x.Id, x.Name, x.Folders.Count + x.Files.Count)).ToList();
-            return new Result<FolderContent>(true, new FolderContent(files, folders));
+            var folders = new List<FolderContent>();
+
+            foreach (var f in folder.Folders)
+            {
+                folders.Add(FolderMapperHelper(f));
+            }
+
+            var fc = new FolderContent(folder.Id, folder.Name, files, folders);
+            return fc;
         }
     }
 }
