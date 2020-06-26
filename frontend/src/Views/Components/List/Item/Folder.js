@@ -20,34 +20,35 @@ class Component_List_Item_Folder extends React.Component {
 
     handleDelete() {
         Modal.confirm({
-            title: 'Jesteś pewien, e chcesz usunąć ten folder?',
+            title: 'Jesteś pewien, że chcesz usunąć ten folder?',
             okText: 'Tak',
             cancelText: 'Nie',
             icon: <ExclamationCircleOutlined />,
             okType: 'danger',
             onOk: () => {
+                this.setState({ folderChangeProcess: true });
+
                 Service_Api.fetch('/api/v1/Folder/' + this.props.folder.id, {
                     data: {
                         method: 'DELETE',
-                        body: JSON.stringify(this.state.fields),
                     },
                     onSuccess: (res) => {
                         if (200 == res.status) {
                             this.props.onFolderChange();
-                        } else if(400 == res.status) {
-                            Modal.error({
-                                title: defaultDeleteFolderErrorMsg,
-                            })
                         } else {
                             Modal.error({
                                 title: defaultDeleteFolderErrorMsg,
-                            })
+                            });
+
+                            this.setState({ folderChangeProcess: false });
                         }
                     },
                     onError: (error) => {
                         Modal.error({
                             title: defaultDeleteFolderErrorMsg,
-                        })
+                        });
+
+                        this.setState({ folderChangeProcess: false });
                     }
                 });
             }

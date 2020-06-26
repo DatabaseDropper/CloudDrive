@@ -10,6 +10,7 @@ import Service_Api from './../../Service/Api';
 import store from './../../Store';
 
 import Component_List_Folder from './../Components/List/Folder';
+import Component_List_File from './../Components/List/File';
 
 const defaultErrorMsg = 'Wystąpił błąd podczas ładowania folderu';
 
@@ -116,9 +117,7 @@ class Components_Folder extends React.Component {
                                         {this.state.folderData.files.length === 0 ?
                                             <div>brak elementów do wyświetlenia</div>
                                             :
-                                            <div>
-                                                
-                                            </div>
+                                            <Component_List_File files={this.state.folderData.files} onFileChange={this.loadFolder} />
                                         }
                                     </Col>
                                 </Row>
