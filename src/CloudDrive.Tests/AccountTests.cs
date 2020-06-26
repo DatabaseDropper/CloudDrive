@@ -256,8 +256,63 @@ namespace CloudDrive.Tests
 
             var downloadedContent = File.ReadAllText(downloadPath);
             Assert.Equal(fileContent, downloadedContent);
-        }    
-        
+        }
+
+        [Fact]
+        public async Task Download_NonPrivate_File()
+        {
+            // Arrange
+
+            var registerData = new RegisterInput
+            {
+                Email = "test@localhost.test",
+                Login = "abcdefg12353",
+                Password = "asd123423534",
+                UserName = "user_test"
+            };
+
+            var fileContent = "abc";
+            var path = Path.Combine(TestFilesFolderName, "text7.txt");
+            CreatePhysicalFile(path, fileContent);
+
+            // create account 
+            var request = new RestRequest("api/v1/Account/Register", Method.POST, DataFormat.Json);
+            request.AddJsonBody(registerData);
+            var response = await rest.ExecuteAsync(request);
+            var response_data = JsonConvert.DeserializeObject<AuthToken>(response.Content);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // upload file
+            var fileRequest = new RestRequest($"api/v1/File/{response_data.DiskInfo.FolderId}", Method.POST);
+            fileRequest.RequestFormat = DataFormat.Json;
+            fileRequest.AddHeader("Content-Type", "multipart/form-data");
+            fileRequest.AddFile("file", path);
+            fileRequest.AddHeader("Authorization", $"Bearer {response_data.Token}");
+
+            var fileResponse = await rest.ExecuteAsync(fileRequest);
+            Assert.Equal(HttpStatusCode.OK, fileResponse.StatusCode);
+            var fileResponseData = JsonConvert.DeserializeObject<FileViewModel>(fileResponse.Content);
+
+            // change status request
+            var statusReq = new RestRequest($"api/v1/File/Share/{fileResponseData.Id}", Method.POST);
+            statusReq.RequestFormat = DataFormat.Json;
+            statusReq.AddHeader("Authorization", $"Bearer {response_data.Token}");
+            var statusResponse = await rest.ExecuteAsync(statusReq);
+            Assert.Equal(HttpStatusCode.OK, statusResponse.StatusCode);
+            Assert.Contains("true", statusResponse.Content);
+
+            // download file
+
+            var downloadPath = Path.Combine(TestFilesFolderName, "text8_download.txt");
+            var downloadRequest = new RestRequest($"api/v1/File/{fileResponseData.Id}");
+            var downloadResponse = rest.DownloadData(downloadRequest);
+
+            File.WriteAllBytes(downloadPath, downloadResponse);
+
+            var downloadedContent = File.ReadAllText(downloadPath);
+            Assert.Equal(fileContent, downloadedContent);
+        }
+
         [Fact]
         public async Task Delete_File_Successfully()
         {
