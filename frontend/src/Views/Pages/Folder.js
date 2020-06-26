@@ -1,11 +1,14 @@
 import React from 'react';
 import {withRouter} from "react-router";
 
-import Components_AuthFolder from './../Components/AuthFolder';
+import Layout_Auth from './../Layouts/Auth';
+import Components_Folder from '../Components/Folder';
 
 const Page_Folder = (props) => {
     return (
-        <Components_AuthFolder folderId={props.match.params.folderId} />
+        <Layout_Auth>
+            <Components_Folder folderId={props.match.params.folderId}></Components_Folder>
+        </Layout_Auth>
     );
 }
 
