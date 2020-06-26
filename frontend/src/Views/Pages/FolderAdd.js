@@ -33,7 +33,6 @@ class Page_FolderAdd extends Component_Form_AbstractForm {
                 } else if(400 == res.status) {
                     res.json()
                     .then((res) => {
-                        console.log(res);
                         let errors = [];
 
                         for(const key in res.errors) {

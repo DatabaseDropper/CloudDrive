@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button, Typography, Spin, Space, Row, Col, List, Card } from 'antd';
+import { Button, Typography, Spin, Space, Row, Col } from 'antd';
 import { ReloadOutlined, FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
 
 import Component_Text_Align from './Text/Align';
 
 import Service_Api from './../../Service/Api';
 import store from './../../Store';
+
+import Component_List_Folder from './../Components/List/Folder';
 
 const defaultErrorMsg = 'Wystąpił błąd podczas ładowania folderu';
 
@@ -24,10 +26,15 @@ class Components_Folder extends React.Component {
         this.loadFolder();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.folderId !== prevProps.folderId) {
+            this.loadFolder();
+        }
+    }
+
     loadFolder() {
         this.setState({ loadingFolder: true, folderData: false, errors: [] });
 
-        console.log(store.getState().get('authData').token);
         Service_Api.fetch('/api/v1/Folder/' + this.props.folderId, {
             data: {
                 method: 'GET'
@@ -57,8 +64,6 @@ class Components_Folder extends React.Component {
     }
 
     render() {
-        console.log(this.state.folderData);
-        
         return (
             <div>
                 {this.state.loadingFolder ?
@@ -103,34 +108,7 @@ class Components_Folder extends React.Component {
                                         {this.state.folderData.folders.length === 0 ?
                                             <div>brak elementów do wyświetlenia</div>
                                             :
-                                            <div>
-                                                <List
-                                                    grid={{
-                                                        gutter: 16,
-                                                        xs: 1,
-                                                        sm: 2,
-                                                        md: 3,
-                                                        lg: 3,
-                                                        xl: 4,
-                                                        xxl: 4
-                                                    }}
-                                                    dataSource={this.state.folderData.folders}
-                                                    renderItem={folder => (
-                                                    <List.Item>
-                                                        <Card title={folder.name}>
-                                                            <Space>
-                                                                <Typography.Text >
-                                                                    <Link to={('/folder/' + folder.id)}>zobacz</Link>
-                                                                </Typography.Text>
-                                                                <Typography.Text type="danger">
-                                                                    usuń
-                                                                </Typography.Text>
-                                                            </Space>
-                                                        </Card>
-                                                    </List.Item>
-                                                    )}
-                                                />
-                                            </div>
+                                            <Component_List_Folder folders={this.state.folderData.folders} onFolderChange={this.loadFolder} />
                                         }
                                         <Typography.Title level={2}>
                                             Pliki
