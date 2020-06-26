@@ -60,6 +60,22 @@ namespace CloudDrive.Controllers
                 ErrorType.None => Ok(result.Data),
                 _ => BadRequest()
             };
+        }  
+        
+        [HttpPost("Share/{Id}")]
+        public async Task<IActionResult> ShareFile(Guid Id)
+        {
+            var user = await _userService.TryGetUserAsync(UserId());
+
+            var result = await _fileService.ChangeFileShareAsync(Id, user);
+
+            return result.Error switch
+            {
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                ErrorType.Internal => StatusCode(StatusCodes.Status500InternalServerError ,result.Errors),
+                ErrorType.None => Ok(new { IsPrivate = result.Data }),
+                _ => BadRequest()
+            };
         }    
         
         [HttpDelete("{Id}")]
