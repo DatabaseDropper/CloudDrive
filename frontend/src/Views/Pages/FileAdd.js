@@ -10,15 +10,6 @@ import Service_Api from '../../Service/Api';
 import Layout_Auth from '../Layouts/Auth';
 
 class Page_FileAdd extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.handleFileChange = this.handleFileChange.bind(this);
-    }
-    handleFileChange(info) {
-        console.log(info);
-    }
-    
     render() {
         return (
             <Layout_Auth>
@@ -35,7 +26,7 @@ class Page_FileAdd extends React.Component {
                         <Typography.Title>
                             Dodaj plik
                         </Typography.Title>
-                        <Upload.Dragger name="file" multiple={false} onChange={this.handleFileChange} action={(Service_Api.getPermalink('/api/v1/File/' + this.props.match.params.folderId))} headers={Service_Api.parseHeaders({})}>
+                        <Upload.Dragger name="file" multiple={false} action={(Service_Api.getPermalink('/api/v1/File/' + this.props.match.params.folderId))} headers={Service_Api.getAuthorizationHeaders()}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>

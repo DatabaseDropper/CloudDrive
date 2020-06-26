@@ -7,7 +7,7 @@ class Service_Api {
         return Config.get('apiUrl') + url;
     }
 
-    parseHeaders(headers = {}) {
+    getAuthorizationHeaders() {
         let authHeaders = {};
         
         if (store.getState().has('authData')) {
@@ -16,9 +16,13 @@ class Service_Api {
             };
         }
 
+        return authHeaders;
+    }
+
+    parseHeaders(headers = {}) {
         return Object.assign({}, {
             'Content-Type': 'application/json;charset=utf-8',
-        }, authHeaders, headers);
+        }, this.getAuthorizationHeaders(), headers);
     }
 
     fetch(url, settings) {
