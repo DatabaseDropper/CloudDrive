@@ -275,7 +275,7 @@ namespace CloudDrive.Services
 
             await _context.SaveChangesAsync();
 
-            return new Result<FileViewModel>(true, new FileViewModel (newFile.Id, newFile.UserFriendlyName, newFile.Size));
+            return new Result<FileViewModel>(true, new FileViewModel(newFile));
         }
 
         public async Task<Result<FolderContent>> LoadFolderContentAsync(Guid FolderId, User user)
@@ -316,7 +316,7 @@ namespace CloudDrive.Services
 
         private static FolderContent FolderMapperHelper(Folder folder)
         {
-            var files = folder.Files.Select(x => new FileViewModel(x.Id, x.UserFriendlyName, x.Size)).ToList();
+            var files = folder.Files.Select(x => new FileViewModel(x)).ToList();
             var folders = new List<FolderContent>();
 
             foreach (var f in folder.Folders)

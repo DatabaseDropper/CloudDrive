@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudDrive.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,11 +12,13 @@ namespace CloudDrive.Models.ViewModels
         {
 
         }
-        public FileViewModel(Guid id, string name, long size)
+
+        public FileViewModel(File file)
         {
-            Id = id;
-            Name = name;
-            Size = size;
+            Id = file.Id;
+            Name = file.UserFriendlyName;
+            Size = file.Size;
+            IsPublic = file.IsAccessibleForEveryone;
         }
 
         public Guid Id { get; set; }
@@ -23,5 +26,7 @@ namespace CloudDrive.Models.ViewModels
         public string Name { get; set; }
 
         public long Size { get; set; }
+
+        public bool IsPublic { get; set; }
     }
 }
