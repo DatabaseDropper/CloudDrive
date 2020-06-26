@@ -14,6 +14,7 @@ import Page_Auth_Register from './Views/Pages/Auth/Register';
 
 import Page_Dashboard from './Views/Pages/Dashboard';
 import Page_FileAdd from './Views/Pages/FileAdd';
+import Page_FolderAdd from './Views/Pages/FolderAdd';
 import Page_Folder from './Views/Pages/Folder';
 import Page_404 from './Views/Pages/404';
 
@@ -26,7 +27,7 @@ const App = ({state}) => {
                         <Page_FileAdd />
                     </Route>
                     <Route exact path="/folder/add/:folderId">
-                        <div>folder add</div>
+                        <Page_FolderAdd />
                     </Route>
                     <Route exact path="/folder/:folderId">
                         <Page_Folder />

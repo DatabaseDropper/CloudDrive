@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-import { Button, Typography, Spin, Space } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { Button, Typography, Spin, Space, Row, Col } from 'antd';
+import { ReloadOutlined, FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
 
 import Component_Text_Align from './Text/Align';
 
@@ -81,11 +82,26 @@ class Components_Folder extends React.Component {
                             </Typography.Paragraph>
                         :
                             <div>
-                                {this.state.folderData.folders.length === 0 && this.state.folderData.files.length === 0 ?
-                                    <div>brak elementów do wyświetlenia</div>
-                                    :
-                                    <div>tutaj będzie lista elementów do wyświetlenia</div>
-                                }
+                                <Row justify="end">
+                                    <Col>
+                                        <Space size="middle">
+                                            <Link to={"/file/add/" + this.props.folderId}><FileAddOutlined /> Dodaj plik</Link>
+                                            <Link to={"/folder/add/" + this.props.folderId}><FolderAddOutlined /> Dodaj folder</Link>
+                                        </Space>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Typography.Title>
+                                            {this.state.folderData.name}
+                                        </Typography.Title>
+                                        {this.state.folderData.folders.length === 0 && this.state.folderData.files.length === 0 ?
+                                            <div>brak elementów do wyświetlenia</div>
+                                            :
+                                            <div>tutaj będzie lista elementów do wyświetlenia</div>
+                                        }
+                                    </Col>
+                                </Row>
                             </div>
                         }
                     </div>

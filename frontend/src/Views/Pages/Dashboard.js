@@ -1,11 +1,14 @@
 import React from 'react';
 
-import Components_AuthFolder from '../Components/AuthFolder';
+import Layout_Auth from './../Layouts/Auth';
+import Components_Folder from '../Components/Folder';
 
-const Page_Folder = (props) => {
+const Page_Dashboard = (props) => {
     return (
-        <Components_AuthFolder folderId={props.folderId} />
+        <Layout_Auth>
+            <Components_Folder folderId={props.folderId}></Components_Folder>
+        </Layout_Auth>
     );
 }
 
-export default Page_Folder;
+export default Page_Dashboard;

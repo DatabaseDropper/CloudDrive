@@ -5,6 +5,8 @@ import { withRouter } from "react-router";
 
 import { authLogout } from './../../Actions'
 
+import { Link } from 'react-router-dom';
+
 import { Layout, Button, Space, Typography, Row, Col, Progress } from 'antd';
 import { PoweroffOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 
@@ -35,7 +37,9 @@ class Layout_Auth extends React.Component {
                 <Layout.Header style={{ padding: '0 20px' }}>
                     <Row justify="space-between" align="middle">
                         <Col>
-                            <img src="/logo-poziome-biale.png" alt="Cloud Drive" />
+                            <Link to="/">
+                                <img src="/logo-poziome-biale.png" alt="Cloud Drive" />
+                            </Link>
                         </Col>
                         <Col>
                             <Button type="" shape="circle" icon={(this.state.siderCollapsed ?  <MenuFoldOutlined /> : <MenuUnfoldOutlined />)} size="large" onClick={this.handleToggleSider} />
