@@ -66,7 +66,7 @@ class Page_Auth_Login extends Component_Form_AbstractForm {
                 {this.state.errors.length > 0 ?
                     <div>
                     {this.state.errors.map((errorMsg, index) => {
-                        return <div><Alert type="error" message={errorMsg} /><br/></div>
+                        return <div key={index}><Alert type="error" message={errorMsg} /><br/></div>
                     })}
                     </div>
                 : null }

@@ -80,7 +80,7 @@ class Components_Folder extends React.Component {
                                 <Component_Text_Align.Center>
                                     <Space direction="vertical" size="middle">
                                         {this.state.errors.map((errorMsg, index) => {
-                                            return <div>{errorMsg}</div>
+                                            return <div key={index}>{errorMsg}</div>
                                         })}
                                         <div>
                                             <Button type="primary" shape="circle" icon={<ReloadOutlined />} size="large" onClick={this.loadFolder} />

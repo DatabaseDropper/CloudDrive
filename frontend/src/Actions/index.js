@@ -1,5 +1,3 @@
-import Service_Api from './../Service/Api';
-
 export const authLogout = () => ({
     type: 'AUTH_LOGOUT'
 });
