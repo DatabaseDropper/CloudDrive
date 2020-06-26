@@ -46,14 +46,21 @@ namespace CloudDrive.Services
             if (file == null)
                 return new Result<FileDTO>(false, null, "File not found", ErrorType.NotFound);
 
-            if (user == null && !folder.IsAccessibleForEveryone && !file.IsAccessibleForEveryone)
+            var canAccess = false;
+
+            if (file.IsAccessibleForEveryone || folder.IsAccessibleForEveryone)
             {
-                return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
+                canAccess = true;
             }
 
             var isOnSharedList = folder.AuthorizedUsers.Any(x => x.UserId == user.Id && x.AccessType == AccessEnum.Read);
 
-            if (!isOnSharedList && file.UploadedById != user.Id)
+            if (isOnSharedList || file.UploadedById == user?.Id)
+            {
+                canAccess = true;
+            }
+
+            if (!canAccess)
             {
                 return new Result<FileDTO>(false, null, "Unauthorized", ErrorType.Unauthorized);
             }
@@ -68,6 +75,22 @@ namespace CloudDrive.Services
             }
 
             return new Result<FileDTO>(true, new FileDTO(result.Bytes, file.UserFriendlyName));
+        }
+
+        public async Task<Result<bool>> ChangeFileShareAsync(Guid id, User user)
+        {
+            if (user == null)
+                return new Result<bool>(false, false, "Unauthorized", ErrorType.Unauthorized);
+
+            var file = await _context
+                             .Files
+                             .FirstOrDefaultAsync(x => x.Id == id && x.UploadedById == user.Id);
+
+            file.IsAccessibleForEveryone = !file.IsAccessibleForEveryone;
+
+            await _context.SaveChangesAsync();
+
+            return new Result<bool>(true, file.IsAccessibleForEveryone);
         }
 
         public async Task<Result<bool>> DeleteFolderAsync(User user, Guid id)
