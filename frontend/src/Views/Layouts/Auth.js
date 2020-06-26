@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 
 import { authLogout } from './../../Actions'
 
-import { Layout, Button, Space, Typography, Row, Col } from 'antd';
+import { Layout, Button, Space, Typography, Row, Col, Progress } from 'antd';
 import { PoweroffOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 
 import Component_Text_Align from './../Components/Text/Align'
@@ -54,8 +54,14 @@ class Layout_Auth extends React.Component {
                                         <Button type="primary" shape="circle" icon={<PoweroffOutlined />} size="large" onClick={this.handleLogout} />
                                     </Typography.Paragraph>
                                     <Typography.Paragraph>
-                                        {this.props.state.get('authData').id}
+                                        {this.props.state.get('authData').userName}<br />
+                                        ({this.props.state.get('authData').id})
                                     </Typography.Paragraph>
+                                    {this.props.state.has('authAccountInfo') ? 
+                                        <Progress strokeLinecap="square" type="circle" percent={( Math.round((this.props.state.has('authAccountInfo').usedSpace * 100)/this.props.state.has('authAccountInfo').totalSpace) )} />
+                                    :
+                                        null
+                                    }
                                 </Space>
                             </div>
                         </Component_Text_Align.Center>
