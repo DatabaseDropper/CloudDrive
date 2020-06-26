@@ -29,11 +29,7 @@ class Components_Folder extends React.Component {
         console.log(store.getState().get('authData').token);
         Service_Api.fetch('/api/v1/Folder/' + this.props.folderId, {
             data: {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    'Authorization': 'Bearer ' + store.getState().get('authData').token
-                },
+                method: 'GET'
             },
             onSuccess: (res) => {
                 if (200 == res.status) {

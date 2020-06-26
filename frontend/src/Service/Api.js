@@ -10,6 +10,18 @@ class Service_Api {
     fetch(url, settings) {
         url = this.getPermalink(url);
 
+        let authHeaders = {};
+
+        if (store.getState().has('authData')) {
+            authHeaders = {
+                'Authorization': 'Bearer ' + store.getState().get('authData').token
+            };
+        }
+
+        settings.data.headers = Object.assign({}, {
+            'Content-Type': 'application/json;charset=utf-8',
+        }, authHeaders, settings.data.headers);
+
         settings = Object.assign({
             data: {},
             onSuccess: (res) => {},
