@@ -286,6 +286,7 @@ namespace CloudDrive.Services
                                .ThenInclude(x => x.Folders)
                                .Include(x => x.Files)
                                .Include(x => x.AuthorizedUsers)
+                               .Include(x => x.ParentFolder)
                                .AsEnumerable()
                                .FirstOrDefault(x => x.Id == FolderId);
 
@@ -324,7 +325,7 @@ namespace CloudDrive.Services
                 folders.Add(FolderMapperHelper(f));
             }
 
-            var fc = new FolderContent(folder.Id, folder.Name, files, folders);
+            var fc = new FolderContent(folder, files, folders);
             return fc;
         }
     }

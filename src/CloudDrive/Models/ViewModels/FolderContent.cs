@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudDrive.Models.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace CloudDrive.Models.ViewModels
@@ -10,10 +11,12 @@ namespace CloudDrive.Models.ViewModels
 
         }
 
-        public FolderContent(Guid id, string name, List<FileViewModel> files, List<FolderContent> folders)
+        public FolderContent(Folder folder, List<FileViewModel> files, List<FolderContent> folders)
         {
-            Id = id;
-            Name = name;
+            Id = folder.Id;
+            Name = folder.Name;
+            ParentId = folder.ParentFolderId;
+            ParentName = folder.ParentFolder?.Name;
             Files = files;
             Folders = folders;
         }
@@ -21,6 +24,10 @@ namespace CloudDrive.Models.ViewModels
         public Guid Id { get; set; }
 
         public string Name { get; set; }
+
+        public Guid? ParentId { get; set; }
+
+        public string ParentName { get; set; }
 
         public List<FileViewModel> Files { get; set; } = new List<FileViewModel>();
 
