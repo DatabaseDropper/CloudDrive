@@ -73,7 +73,7 @@ namespace CloudDrive.Controllers
             {
                 ErrorType.Unauthorized => Unauthorized(result.Errors),
                 ErrorType.Internal => StatusCode(StatusCodes.Status500InternalServerError ,result.Errors),
-                ErrorType.None => Ok(new { IsPrivate = result.Data }),
+                ErrorType.None => Ok(new { IsPublic = result.Data }),
                 _ => BadRequest()
             };
         }    
