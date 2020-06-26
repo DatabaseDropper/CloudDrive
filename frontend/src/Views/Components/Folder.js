@@ -81,6 +81,9 @@ class Components_Folder extends React.Component {
                             </Typography.Paragraph>
                         :
                             <div>
+                                <Typography.Title>
+                                    {this.state.folderData.name}
+                                </Typography.Title>
                                 {this.state.folderData.folders.length === 0 && this.state.folderData.files.length === 0 ?
                                     <div>brak elementów do wyświetlenia</div>
                                     :
