@@ -47,7 +47,7 @@ namespace CloudDrive.Controllers
         }      
         
         [HttpPost("{Id}")]
-        public async Task<IActionResult> UploadFile(Guid Id, IFormFile file)
+        public async Task<IActionResult> UploadFile(Guid Id, [FromForm] IFormFile file)
         {
             var user = await _userService.TryGetUserAsync(UserId());
 
