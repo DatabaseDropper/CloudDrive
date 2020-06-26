@@ -8,6 +8,11 @@ namespace CloudDrive.Models.ViewModels
 {
     public class FileViewModel
     {
+        public FileViewModel()
+        {
+
+        }
+
         public FileViewModel(File file)
         {
             Id = file.Id;
