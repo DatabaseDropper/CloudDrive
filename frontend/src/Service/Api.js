@@ -7,20 +7,24 @@ class Service_Api {
         return Config.get('apiUrl') + url;
     }
 
-    fetch(url, settings) {
-        url = this.getPermalink(url);
-
+    parseHeaders(headers = {}) {
         let authHeaders = {};
-
+        
         if (store.getState().has('authData')) {
             authHeaders = {
                 'Authorization': 'Bearer ' + store.getState().get('authData').token
             };
         }
 
-        settings.data.headers = Object.assign({}, {
+        return Object.assign({}, {
             'Content-Type': 'application/json;charset=utf-8',
-        }, authHeaders, settings.data.headers);
+        }, authHeaders, headers);
+    }
+
+    fetch(url, settings) {
+        url = this.getPermalink(url);
+
+        settings.data.headers = this.parseHeaders(settings.data.headers);
 
         settings = Object.assign({
             data: {},
