@@ -68,6 +68,5 @@ namespace CloudDrive.Controllers
                 _ => BadRequest()
             };
         }
-
     }
 }
