@@ -93,6 +93,7 @@ class Components_Folder extends React.Component {
                                 <Row justify="end">
                                     <Col>
                                         <Space size="middle">
+                                            <Button type="link" onClick={this.loadFolder}><ReloadOutlined /> Odśwież</Button>
                                             <Link to={"/file/add/" + this.props.folderId}><FileAddOutlined /> Dodaj plik</Link>
                                             <Link to={"/folder/add/" + this.props.folderId}><FolderAddOutlined /> Dodaj folder</Link>
                                         </Space>
