@@ -229,6 +229,11 @@ namespace CloudDrive.Services
             var newFileName = Guid.NewGuid().ToString("N");
             var path = Path.Combine(_settings.StorageFolderPath, newFileName);
 
+            if (!Directory.Exists(_settings.StorageFolderPath))
+            {
+                Directory.CreateDirectory(_settings.StorageFolderPath);
+            }
+
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
