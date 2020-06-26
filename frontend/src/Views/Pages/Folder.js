@@ -1,11 +1,12 @@
 import React from 'react';
 
 import Layout_Auth from './../Layouts/Auth';
+import Components_Folder from './../Components/Folder';
 
 const Page_Folder = (props) => {
     return (
         <Layout_Auth>
-            tutaj będzie widok folderu
+            <Components_Folder folderId={props.folderId}></Components_Folder>
         </Layout_Auth>
     );
 }

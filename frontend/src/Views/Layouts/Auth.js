@@ -14,8 +14,6 @@ class Layout_Auth extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log(window.screen.width );
-
         this.state = {siderCollapsed: (window.screen.width < 700 ? true : false)};
 
         this.handleLogout = this.handleLogout.bind(this);
