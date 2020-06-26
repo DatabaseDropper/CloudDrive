@@ -23,9 +23,6 @@ class Page_Auth_Login extends Component_Form_AbstractForm {
             data: {
                 method: 'POST',
                 body: JSON.stringify(this.state.fields),
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                },
             },
             onSuccess: (res) => {
                 if (200 == res.status) {

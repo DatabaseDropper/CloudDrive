@@ -8,6 +8,9 @@ export default (state, action) => {
         case 'AUTH_LOGOUT':
             state = state.clear();
             break;
+        case 'AUTH_SET_ACCOUNT_INFO':
+            state = state.set('authAccountInfo', action.authAccountInfo);
+            break;
         default:
             return state;
     }
