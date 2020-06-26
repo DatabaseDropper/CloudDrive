@@ -26,7 +26,7 @@ class Page_FileAdd extends React.Component {
                         <Typography.Title>
                             Dodaj plik
                         </Typography.Title>
-                        <Upload.Dragger name="file" multiple={false} action={(Service_Api.getPermalink('/api/v1/File/' + this.props.match.params.folderId))} headers={Service_Api.getAuthorizationHeaders()}>
+                        <Upload.Dragger name="file" multiple={true} action={(Service_Api.getPermalink('/api/v1/File/' + this.props.match.params.folderId))} headers={Service_Api.getAuthorizationHeaders()}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>

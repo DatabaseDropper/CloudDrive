@@ -32,6 +32,11 @@ class Layout_Auth extends React.Component {
     }
 
     render() {
+        let usedSpace = 0;
+
+        if (this.props.state.has('authAccountInfo')) {
+            usedSpace = Math.round(((this.props.state.get('authAccountInfo').usedSpace * 100) / this.props.state.get('authAccountInfo').totalSpace) * 100) / 100;
+        }
         return (
             <Layout className="layout" style={{minHeight: '100vh'}}>
                 <Layout.Header style={{ padding: '0 20px' }}>
@@ -62,7 +67,7 @@ class Layout_Auth extends React.Component {
                                         ({this.props.state.get('authData').id})
                                     </Typography.Paragraph>
                                     {this.props.state.has('authAccountInfo') ? 
-                                        <Progress strokeLinecap="square" type="circle" percent={( Math.round((this.props.state.has('authAccountInfo').usedSpace * 100)/this.props.state.has('authAccountInfo').totalSpace) )} />
+                                        <Progress strokeLinecap="square" type="circle" format={percent => `${percent}%`} status={ usedSpace > 90 ? 'exception' : 'normal'} percent={usedSpace} />
                                     :
                                         null
                                     }
