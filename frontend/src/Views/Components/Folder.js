@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button, Typography, Spin, Space, Row, Col } from 'antd';
+import { Button, Typography, Spin, Space, Row, Col, List, Card } from 'antd';
 import { ReloadOutlined, FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
 
 import Component_Text_Align from './Text/Align';
@@ -57,6 +57,8 @@ class Components_Folder extends React.Component {
     }
 
     render() {
+        console.log(this.state.folderData);
+        
         return (
             <div>
                 {this.state.loadingFolder ?
@@ -91,14 +93,54 @@ class Components_Folder extends React.Component {
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Col>
+                                    <Col span={24}>
                                         <Typography.Title>
                                             {this.state.folderData.name}
                                         </Typography.Title>
-                                        {this.state.folderData.folders.length === 0 && this.state.folderData.files.length === 0 ?
+                                        <Typography.Title level={2}>
+                                            Foldery podrzędne
+                                        </Typography.Title>
+                                        {this.state.folderData.folders.length === 0 ?
                                             <div>brak elementów do wyświetlenia</div>
                                             :
-                                            <div>tutaj będzie lista elementów do wyświetlenia</div>
+                                            <div>
+                                                <List
+                                                    grid={{
+                                                        gutter: 16,
+                                                        xs: 1,
+                                                        sm: 2,
+                                                        md: 3,
+                                                        lg: 3,
+                                                        xl: 4,
+                                                        xxl: 4
+                                                    }}
+                                                    dataSource={this.state.folderData.folders}
+                                                    renderItem={folder => (
+                                                    <List.Item>
+                                                        <Card title={folder.name}>
+                                                            <Space>
+                                                                <Typography.Text >
+                                                                    <Link to={('/folder/' + folder.id)}>zobacz</Link>
+                                                                </Typography.Text>
+                                                                <Typography.Text type="danger">
+                                                                    usuń
+                                                                </Typography.Text>
+                                                            </Space>
+                                                        </Card>
+                                                    </List.Item>
+                                                    )}
+                                                />
+                                            </div>
+                                        }
+                                        <Typography.Title level={2}>
+                                            Pliki
+                                        </Typography.Title>
+                                        {this.state.folderData.files.length === 0 ?
+                                            <div>brak elementów do wyświetlenia</div>
+                                            :
+                                            <div>
+                                                
+                                            </div>
                                         }
                                     </Col>
                                 </Row>
