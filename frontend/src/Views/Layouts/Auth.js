@@ -7,7 +7,7 @@ import { authLogout } from './../../Actions'
 
 import { Link } from 'react-router-dom';
 
-import { Layout, Button, Space, Typography, Row, Col, Progress } from 'antd';
+import { Layout, Button, Space, Typography, Row, Col, Progress, Tooltip } from 'antd';
 import { PoweroffOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 
 import Component_Text_Align from './../Components/Text/Align'
@@ -60,7 +60,9 @@ class Layout_Auth extends React.Component {
                             <div style={{padding: '20px'}}>
                                 <Space direction="vertical">
                                     <Typography.Paragraph>
-                                        <Button type="primary" shape="circle" icon={<PoweroffOutlined />} size="large" onClick={this.handleLogout} />
+                                        <Tooltip title="wyloguj">
+                                            <Button type="primary" shape="circle" icon={<PoweroffOutlined />} size="large" onClick={this.handleLogout} />
+                                        </Tooltip>
                                     </Typography.Paragraph>
                                     <Typography.Paragraph>
                                         {this.props.state.get('authData').userName}<br />
