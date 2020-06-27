@@ -7,8 +7,8 @@ import { authLogout } from './../../Actions'
 
 import { Link } from 'react-router-dom';
 
-import { Layout, Button, Space, Typography, Row, Col, Progress, Tooltip } from 'antd';
-import { PoweroffOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { Layout, Button, Space, Typography, Row, Col, Progress, Tooltip, BackTop } from 'antd';
+import { PoweroffOutlined, MenuUnfoldOutlined, MenuFoldOutlined, UpOutlined } from '@ant-design/icons';
 
 import Component_Text_Align from './../Components/Text/Align'
 
@@ -78,6 +78,9 @@ class Layout_Auth extends React.Component {
                         </Component_Text_Align.Center>
                     </Layout.Sider>
                 </Layout>
+                <BackTop>
+                    <Button type="primary" shape="circle" icon={<UpOutlined />} size="large"/>
+                </BackTop>
             </Layout>
         );
     }
