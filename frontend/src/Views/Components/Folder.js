@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button, Typography, Spin, Space, Row, Col } from 'antd';
-import { ReloadOutlined, FileAddOutlined, FolderAddOutlined } from '@ant-design/icons';
+import { ReloadOutlined, FileAddOutlined, FolderAddOutlined, LeftOutlined } from '@ant-design/icons';
 
 import Component_Text_Align from './Text/Align';
 
@@ -90,7 +90,14 @@ class Components_Folder extends React.Component {
                             </Typography.Paragraph>
                         :
                             <div>
-                                <Row justify="end">
+                                <Row justify="space-between">
+                                    <Col>
+                                        {this.state.folderData.parentId && this.state.folderData.parentName ?
+                                                <Link to={"/folder/" + this.state.folderData.parentId}><LeftOutlined /> {this.state.folderData.parentName}</Link>
+                                            :
+                                                null
+                                        }
+                                    </Col>
                                     <Col>
                                         <Space size="middle">
                                             <Button type="link" onClick={this.loadFolder}><ReloadOutlined /> Odśwież</Button>
