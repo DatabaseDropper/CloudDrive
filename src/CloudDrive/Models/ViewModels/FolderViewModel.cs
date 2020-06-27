@@ -20,7 +20,11 @@ namespace CloudDrive.Models.ViewModels
         }
 
         public Guid Id { get; set; }
+
         public string Name { get; set; }
+
         public int ItemsCount { get; set; }
+
+        public List<FolderContent> Folders { get; set; } = new List<FolderContent>();
     }
 }

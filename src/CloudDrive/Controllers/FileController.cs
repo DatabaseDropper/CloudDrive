@@ -47,7 +47,7 @@ namespace CloudDrive.Controllers
         }      
         
         [HttpPost("{Id}")]
-        public async Task<IActionResult> UploadFile(Guid Id, IFormFile file)
+        public async Task<IActionResult> UploadFile(Guid Id, [FromForm] IFormFile file)
         {
             var user = await _userService.TryGetUserAsync(UserId());
 
@@ -60,6 +60,22 @@ namespace CloudDrive.Controllers
                 ErrorType.None => Ok(result.Data),
                 _ => BadRequest()
             };
+        }  
+        
+        [HttpPost("Share/{Id}")]
+        public async Task<IActionResult> ShareFile(Guid Id)
+        {
+            var user = await _userService.TryGetUserAsync(UserId());
+
+            var result = await _fileService.ChangeFileShareAsync(Id, user);
+
+            return result.Error switch
+            {
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                ErrorType.Internal => StatusCode(StatusCodes.Status500InternalServerError ,result.Errors),
+                ErrorType.None => Ok(new { IsPublic = result.Data }),
+                _ => BadRequest()
+            };
         }    
         
         [HttpDelete("{Id}")]
@@ -67,9 +83,15 @@ namespace CloudDrive.Controllers
         {
             var user = await _userService.TryGetUserAsync(UserId());
 
-            // TODO
+            var result = await _fileService.DeleteFileAsync(user, Id);
 
-            return Ok();
+            return result.Error switch
+            {
+                ErrorType.None => Ok(result.Data),
+                ErrorType.NotFound => NotFound(result.Errors),
+                ErrorType.Unauthorized => Unauthorized(result.Errors),
+                _ => BadRequest()
+            };
         }
     }
 }

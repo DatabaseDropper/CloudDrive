@@ -28,7 +28,7 @@ namespace CloudDrive.Controllers
         {
             var result = await _accountService.TryRegister(input);
 
-            return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(result.Errors);
+            return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(new { result.Errors });
         }     
         
         [HttpPost("SignIn")]
@@ -36,7 +36,7 @@ namespace CloudDrive.Controllers
         {
             var result = await _accountService.TrySignIn(input);
 
-            return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(result.Errors);
+            return result.Success ? Ok(result.Data) : (IActionResult)BadRequest(new { result.Errors });
         }
 
         [Authorize]

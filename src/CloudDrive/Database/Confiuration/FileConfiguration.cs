@@ -20,6 +20,8 @@ namespace CloudDrive.Database.Confiuration
             builder.HasIndex(x => x.Id);
             builder.HasIndex(x => x.UserFriendlyName);
             builder.HasIndex(x => x.UploadedById);
+
+            builder.HasQueryFilter(x => x.IsDeleted == false);
         }
     }
 }

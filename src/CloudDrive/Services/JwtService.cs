@@ -30,7 +30,7 @@ namespace CloudDrive.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Auth:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiresAt = DateTime.Now.AddMinutes(30);
+            var expiresAt = DateTime.Now.AddHours(3);
             var token = new JwtSecurityToken
             (
                 claims: claims,
@@ -39,7 +39,7 @@ namespace CloudDrive.Services
             );
 
             var result = new JwtSecurityTokenHandler().WriteToken(token);
-            var authToken = new AuthToken(result, user.Login, ((DateTimeOffset)expiresAt).ToUnixTimeSeconds());
+            var authToken = new AuthToken(result, user.Login, ((DateTimeOffset)expiresAt).ToUnixTimeSeconds(), user.Username);
             return authToken;
         }
     }
