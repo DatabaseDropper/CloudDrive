@@ -109,6 +109,9 @@ namespace CloudDrive.Services
             if (folder is null)
                 return new Result<bool>(false, false, "Not found", ErrorType.NotFound);
 
+            if (folder.ParentFolderId is null)
+                return new Result<bool>(false, false, "You cannot remove disk's folder", ErrorType.BadRequest);
+
             var disk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == folder.DiskHintId && x.OwnerId == user.Id);
 
             if (disk is null)
@@ -143,7 +146,8 @@ namespace CloudDrive.Services
             }
 
             _context.Files.RemoveRange(filesToDelete);
-            _context.Folders.RemoveRange(foldersToDelete);
+
+            _context.Folders.Remove(folder);
 
             await _context.SaveChangesAsync();
 

@@ -13,7 +13,12 @@ namespace CloudDrive.Database.Confiuration
 
             builder.Property(x => x.Name).IsRequired().HasMaxLength(128);
 
-            builder.HasMany(x => x.Folders).WithOne(x => x.ParentFolder).HasForeignKey(x => x.ParentFolderId);
+            builder
+                   .HasMany(x => x.Folders)
+                   .WithOne(x => x.ParentFolder)
+                   .HasForeignKey(x => x.ParentFolderId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasMany(x => x.Files);
 
             builder.HasIndex(x => x.Id);
