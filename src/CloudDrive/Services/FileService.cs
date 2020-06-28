@@ -147,7 +147,11 @@ namespace CloudDrive.Services
 
             _context.Files.RemoveRange(filesToDelete);
 
-            await _context.SaveChangesAsync();
+            // important!!!
+            // this is required in order to delete parent after their subfolders 
+            foldersToDelete = foldersToDelete
+                              .OrderBy(x => x.Folders.Count)
+                              .ToList();
 
             _context.Folders.RemoveRange(foldersToDelete);
 
