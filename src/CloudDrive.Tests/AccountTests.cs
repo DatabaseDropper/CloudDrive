@@ -208,6 +208,125 @@ namespace CloudDrive.Tests
             Assert.NotEmpty(obj2.Folders);
             Assert.Contains(obj2.Folders, x => x.Name == "test");
             Assert.DoesNotContain(obj2.Folders, x => x.Name == "Folder");
+        }    
+        
+        [Fact]
+        public async Task Ensure_YouCannotDelete_Main_Folder()
+        {
+            // Step 1 - Register
+            var request = new RestRequest("api/v1/Account/Register", Method.POST, DataFormat.Json);
+
+            var registerData = new RegisterInput
+            {
+                Email = "test@localhost.test",
+                Login = "abcdefg12353",
+                Password = "asd123423534",
+                UserName = "user_test"
+            };
+
+            request.AddJsonBody(registerData);
+
+            var response = await rest.ExecuteAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("token", response.Content);
+
+            var users = _context.Users.ToList();
+
+            Assert.Single(users);
+
+            // Step 2 - Try Delete Main Folder
+            var obj = JsonConvert.DeserializeObject<AuthToken>(response.Content);
+
+            var request2 = new RestRequest($"api/v1/Folder/{obj.DiskInfo.FolderId}", Method.DELETE, DataFormat.Json);
+            request2.AddHeader("Authorization", $"Bearer {obj.Token}");
+            response = await rest.ExecuteAsync(request2);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);       
+        }     
+        
+        [Fact]
+        public async Task Register_And_CreateTwoNestedFolders_SendFile_DeleteParentFolder()
+        {
+            // Arrange
+            var request = new RestRequest("api/v1/Account/Register", Method.POST, DataFormat.Json);
+
+            var registerData = new RegisterInput
+            {
+                Email = "test@localhost.test",
+                Login = "abcdefg12353",
+                Password = "asd123423534",
+                UserName = "user_test"
+            };
+
+            request.AddJsonBody(registerData);
+
+            // Act
+            var response = await rest.ExecuteAsync(request);
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("token", response.Content);
+
+            var users = _context.Users.ToList();
+
+            Assert.Single(users);
+            // Step 2 - Create Folder
+            var obj = JsonConvert.DeserializeObject<AuthToken>(response.Content);
+
+            var request2 = new RestRequest($"api/v1/Folder/{obj.DiskInfo.FolderId}", Method.POST, DataFormat.Json);
+            request2.AddJsonBody(new CreateFolderInput { Name = "test" });
+            request2.AddHeader("Authorization", $"Bearer {obj.Token}");
+            response = await rest.ExecuteAsync(request2);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var step2Repsponse = JsonConvert.DeserializeObject<CreateFolderResult>(response.Content);
+
+            // Step 3 - Create folder inside
+
+            var request3 = new RestRequest($"api/v1/Folder/{step2Repsponse.Id}", Method.POST, DataFormat.Json);
+            request3.AddJsonBody(new CreateFolderInput { Name = "test" });
+            request3.AddHeader("Authorization", $"Bearer {obj.Token}");
+            response = await rest.ExecuteAsync(request3);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var step3Repsponse = JsonConvert.DeserializeObject<CreateFolderResult>(response.Content);
+
+
+            // Step 4 - Upload file to deeper folder
+
+            var fileContent = "abc";
+            var path = Path.Combine(TestFilesFolderName, "text7.txt");
+            CreatePhysicalFile(path, fileContent);
+
+            var fileRequest = new RestRequest($"api/v1/File/{step3Repsponse.Id}", Method.POST);
+            fileRequest.RequestFormat = DataFormat.Json;
+            fileRequest.AddHeader("Content-Type", "multipart/form-data");
+            fileRequest.AddFile("file", path);
+            fileRequest.AddHeader("Authorization", $"Bearer {obj.Token}");
+
+            var fileResponse = await rest.ExecuteAsync(fileRequest);
+            Assert.Equal(HttpStatusCode.OK, fileResponse.StatusCode);
+         
+            // Step 5 - Delete parent folder
+
+            var deleteRequest = new RestRequest($"api/v1/Folder/{step2Repsponse.Id}", Method.DELETE, DataFormat.Json);
+            deleteRequest.AddHeader("Authorization", $"Bearer {obj.Token}");
+            response = await rest.ExecuteAsync(deleteRequest);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // Step 6 - Ensure is empty
+
+            var ensure_exists_request = new RestRequest($"api/v1/Folder/{obj.DiskInfo.FolderId}", Method.GET, DataFormat.Json);
+            ensure_exists_request.AddHeader("Authorization", $"Bearer {obj.Token}");
+            var ensure_exists_response = await rest.ExecuteAsync(ensure_exists_request);
+
+            Assert.Equal(HttpStatusCode.OK, ensure_exists_response.StatusCode);
+
+            var finalResult = JsonConvert.DeserializeObject<FolderContent>(ensure_exists_response.Content);
+
+            Assert.Empty(finalResult.Files);
+            Assert.Empty(finalResult.Folders);
         }
 
         [Fact]
