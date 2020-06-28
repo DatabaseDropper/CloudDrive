@@ -33,7 +33,7 @@ namespace CloudDrive.Tests
 
             var path = Path.Combine(".", TestFilesFolderName);
             Directory.CreateDirectory(path);
-            var str = $"filename={Guid.NewGuid()}.db;foreign keys=true;";
+            var str = $"database_{Guid.NewGuid()}";
             
             config["Database:TestString"] = str;
             config["Storage:StorageFolderPath"] = path;
@@ -46,7 +46,7 @@ namespace CloudDrive.Tests
                          .UseUrls(url)
                          .Build();
 
-            var options = new DbContextOptionsBuilder().UseSqlite(str);
+            var options = new DbContextOptionsBuilder().UseInMemoryDatabase(str);
             _context = new Context(options.Options);
 
             builder.Start();
