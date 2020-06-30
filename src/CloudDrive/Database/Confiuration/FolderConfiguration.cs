@@ -16,9 +16,8 @@ namespace CloudDrive.Database.Confiuration
             builder
                    .HasMany(x => x.Folders)
                    .WithOne(x => x.ParentFolder)
-                   .HasForeignKey(x => x.ParentFolderId)
-                   .OnDelete(DeleteBehavior.Cascade);
-
+                   .HasForeignKey(x => x.ParentFolderId);
+                  
             builder.HasMany(x => x.Files);
 
             builder.HasIndex(x => x.Id);
