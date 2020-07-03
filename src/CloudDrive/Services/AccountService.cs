@@ -36,10 +36,10 @@ namespace CloudDrive.Services
             };
 
             if (await _context.Users.AnyAsync(x => x.Email.ToLower() == input.Email.ToLower()))
-                errors["email"].Add("This e-mail address is already being used.");
+                errors["email"].Add("Ten adres e-mail został już użyty!");
 
             if (await _context.Users.AnyAsync(x => x.Login.ToLower() == input.Login.ToLower()))
-                errors["login"].Add("This login is already being used.");
+                errors["login"].Add("Ten login jest już używany");
 
             if (errors.Any(x => x.Value.Any()))
                 return new Result<AuthToken>(false, null, errors, ErrorType.BadRequest);
@@ -61,7 +61,7 @@ namespace CloudDrive.Services
 
             if (changedRows == 0)
             {
-                return new Result<AuthToken>(false, null, "Something went wrong", ErrorType.Internal);
+                return new Result<AuthToken>(false, null, "Coś poszło nie tak. Spróbuj później", ErrorType.Internal);
             }
 
             return new Result<AuthToken>(true, token);
@@ -71,7 +71,7 @@ namespace CloudDrive.Services
         {
             if (user == null)
             {
-                return new Result<AccountInfoViewModel>(false, null, "Data is not received", ErrorType.BadRequest);
+                return new Result<AccountInfoViewModel>(false, null, "Błąd połączenia z bazą", ErrorType.BadRequest);
             }
 
             var disk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == user.DiskId);
@@ -103,14 +103,14 @@ namespace CloudDrive.Services
 
             if (user == null)
             {
-                return new Result<AuthToken>(false, null, "Incorrect credentials.", ErrorType.BadRequest);
+                return new Result<AuthToken>(false, null, "Nieprawidłowe dane logowania", ErrorType.BadRequest);
             }
 
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, input.Password);
 
             if (result != PasswordVerificationResult.Success)
             {
-                return new Result<AuthToken>(false, null, "Incorrect credentials.", ErrorType.BadRequest);
+                return new Result<AuthToken>(false, null, "Nieprawidłowe dane logowania", ErrorType.BadRequest);
             }
 
             var token = _tokenService.BuildToken(user);

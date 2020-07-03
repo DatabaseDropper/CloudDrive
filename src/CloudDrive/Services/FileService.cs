@@ -252,7 +252,7 @@ namespace CloudDrive.Services
 
             if (folderDisk == null || folderDisk.FreeSpace < file.Length)
             {
-                return new Result<FileViewModel>(false, null, "Avaliable disk size is smaller than yours file size.", ErrorType.BadRequest);
+                return new Result<FileViewModel>(false, null, "Dostępna przestrzeń dyskowa jest mniejsza niż rozmiar pliku", ErrorType.BadRequest);
             }
 
             var newFileName = Guid.NewGuid().ToString("N");

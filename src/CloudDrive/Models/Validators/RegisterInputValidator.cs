@@ -10,34 +10,34 @@ namespace CloudDrive.Models.Validators
         {
             RuleFor(x => x.Email)
                 .NotNull()
-                .WithMessage("E-mail address is not correct.")
+                .WithMessage("Adres e-mail ma nieprawidłowy format")
                 .NotEmpty()
-                .WithMessage("E-mail address is not correct.")
+                .WithMessage("Adres e-mail ma nieprawidłowy format")
                 .EmailAddress()
-                .WithMessage("E-mail address is not correct.");
+                .WithMessage("Adres e-mail ma nieprawidłowy format");
 
             RuleFor(x => x.UserName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotNull()
-                .WithMessage("You need to provide your user name.")
+                .WithMessage("Musisz podać nazwę użytkownika")
                 .NotEmpty()
-                .WithMessage("You need to provide your user name.");
+                .WithMessage("Musisz podać nazwę użytkownika");
                 
             RuleFor(x => x.Login)
                 .NotNull()
-                .WithMessage("You need to provide your login.")
+                .WithMessage("Musisz podać login")
                 .NotEmpty()
-                .WithMessage("You need to provide your login.")
+                .WithMessage("Musisz podać login")
                 .Length(6, 50)
-                .WithMessage("Login's length must be greater or equal to 6 and not greater than 50.");
+                .WithMessage("Login musi podsiadać od 6 do 50 znaków");
             
             RuleFor(x => x.Password)
                 .NotNull()
-                .WithMessage("You need to provide your password.")
+                .WithMessage("Musisz podać hasło")
                 .NotEmpty()
-                .WithMessage("You need to provide your password.")
+                .WithMessage("Musisz podać hasło")
                 .Length(8, 256)
-                .WithMessage("Password's length must be greater or equal to 8 and not greater than 256.");
+                .WithMessage("Hałso musi składać z 8 do 256 znaków");
         }
     }
 }
