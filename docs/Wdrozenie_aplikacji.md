@@ -65,3 +65,58 @@ $ apt-cache madison docker-ce
 ```sh
 $ sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> containerd.io
 ```	
+
+##### 7)	Instalacja nginx
+###
+```sh
+$ sudo apt-get install nginx
+```	
+
+##### 8)	Instalacja bazy MSSQL
+###
+Skopiowanie skryptu + jego uruchomienie 
+Wejsćie do folderu z pobranym projektem a następnie wejście do folderu dokumenty i podfolderu docker. W folderze tym odpalamy skrypt komendą 
+```sh
+$ sudo ./docker_create_local_MSSQL.sh
+```	
+Następnie sprawdzamy czy baza wstała: 
+```sh
+$ sudo docker ps –a
+```	
+##### 9)	Konfiguracja serwera http nginx
+###
+Zmianiemy ścieżkę na
+```sh
+/etc/nginx/sites-available
+```	
+Tworzymy plik default
+```sh
+$ sudo nano default 
+```	
+```sh
+server {
+    listen        80;
+    server_name   example.com *.example.com;
+    location / {
+        proxy_pass         http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection keep-alive;
+        proxy_set_header   Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}
+```	
+
+Zmianiamy ścieżkę na
+```sh
+project/CloudDrive/src/ 
+```	
+gdzie instalujemy obsługę FrontEndu
+```sh
+$ sudo apt-get install tmux 
+dotnet run
+curl –sl https://deb.nodesource.com/setup_14.x | bash - sudo apt –get install –y node/js
+```	
