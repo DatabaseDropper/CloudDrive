@@ -13,7 +13,7 @@ import Service_Api from './../../../Service/Api';
 
 import { authLogin } from './../../../Actions';
 
-const defaultErrorMsg = 'Wystąpił błąd podczas logowania. Sprubuj jeszcze raz';
+const defaultErrorMsg = 'Wystąpił błąd podczas logowania. Spróbuj ponownie później';
 
 class Page_Auth_Login extends Component_Form_AbstractForm {
     handleSubmit() {

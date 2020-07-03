@@ -34,7 +34,7 @@ class Page_FileAdd extends React.Component {
                                 Kliknij lub przeciągnij plik do tego obszaru, aby go przesłać
                             </p>
                             <p className="ant-upload-hint">
-                                Jednorazowo moesz tytaj przeciągnąć tylko jeden plik
+                                Jednorazowo możesz tutaj przeciągnąć tylko jeden plik!
                             </p>
                         </Upload.Dragger>
                     </Col>

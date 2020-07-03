@@ -13,7 +13,7 @@ import Service_Api from './../../../Service/Api';
 
 import { authLogin } from './../../../Actions';
 
-const defaultErrorMsg = 'Wystąpił błąd podczas rejestracji. Sprubuj jeszcze raz';
+const defaultErrorMsg = 'Wystąpił błąd podczas rejestracji. Spróbuj ponownie później';
 
 class Page_Auth_Register extends Component_Form_AbstractForm {
     handleSubmit() {
@@ -80,7 +80,7 @@ class Page_Auth_Register extends Component_Form_AbstractForm {
                     <Form.Item name="email" label="E-mail" required={true}>
                         <Input name="email" type="email" onChange={this.handleChange} value={this.state.fields.email} />
                     </Form.Item>
-                    <Form.Item name="userName" label="Nazwa uytkownika" required={true}>
+                    <Form.Item name="userName" label="Nazwa użytkownika" required={true}>
                         <Input name="userName" onChange={this.handleChange} value={this.state.fields.userName} />
                     </Form.Item>
                     <Component_Text_Align.Center>
