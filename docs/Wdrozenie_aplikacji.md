@@ -120,3 +120,9 @@ $ sudo apt-get install tmux
 dotnet run
 curl –sl https://deb.nodesource.com/setup_14.x | bash - sudo apt –get install –y node/js
 ```	
+
+##### 10)	Końcowym etapem napotkano niewielki problem z adresacją, do jego rozwiązania powołany został cały zespół odpowiedzialny za projekt. Wspólnymi siłamy szybko udało nam się pożegnać z problemem
+###
+##### 11)	Testy aplikacji na serwerze
+###
+Po udanym wdrożeniu aplikacji zaczeliśmy przeprowadzać testy aplikacji. Zostały wrzucone przykładowe pliki I udostępnione. Zostały założone konta użytkowników. Wysłany został również link z testowym plikiem do zaprzyjaźnionych osób aby sprawdzić działanie aplikacji.
