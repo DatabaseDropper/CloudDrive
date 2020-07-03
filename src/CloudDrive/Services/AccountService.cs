@@ -36,10 +36,10 @@ namespace CloudDrive.Services
             };
 
             if (await _context.Users.AnyAsync(x => x.Email.ToLower() == input.Email.ToLower()))
-                errors["email"].Add("This e-mail address is already being used.");
+                errors["email"].Add("Ten adres e-mail został już użyty!");
 
             if (await _context.Users.AnyAsync(x => x.Login.ToLower() == input.Login.ToLower()))
-                errors["login"].Add("This login is already being used.");
+                errors["login"].Add("Ten login jest już używany");
 
             if (errors.Any(x => x.Value.Any()))
                 return new Result<AuthToken>(false, null, errors, ErrorType.BadRequest);
