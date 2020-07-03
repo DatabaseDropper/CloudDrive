@@ -147,7 +147,9 @@ namespace CloudDrive.Services
 
             _context.Files.RemoveRange(filesToDelete);
 
-            _context.Folders.Remove(folder);
+            foldersToDelete.Reverse();
+
+            _context.Folders.RemoveRange(foldersToDelete);
 
             await _context.SaveChangesAsync();
 
