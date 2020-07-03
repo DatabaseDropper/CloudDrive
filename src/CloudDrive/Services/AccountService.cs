@@ -61,7 +61,7 @@ namespace CloudDrive.Services
 
             if (changedRows == 0)
             {
-                return new Result<AuthToken>(false, null, "Something went wrong", ErrorType.Internal);
+                return new Result<AuthToken>(false, null, "Coś poszło nie tak. Spróbuj później", ErrorType.Internal);
             }
 
             return new Result<AuthToken>(true, token);
@@ -71,7 +71,7 @@ namespace CloudDrive.Services
         {
             if (user == null)
             {
-                return new Result<AccountInfoViewModel>(false, null, "Data is not received", ErrorType.BadRequest);
+                return new Result<AccountInfoViewModel>(false, null, "Błąd połączenia z bazą", ErrorType.BadRequest);
             }
 
             var disk = await _context.Disks.FirstOrDefaultAsync(x => x.Id == user.DiskId);
@@ -103,14 +103,14 @@ namespace CloudDrive.Services
 
             if (user == null)
             {
-                return new Result<AuthToken>(false, null, "Incorrect credentials.", ErrorType.BadRequest);
+                return new Result<AuthToken>(false, null, "Nieprawidłowe dane logowania", ErrorType.BadRequest);
             }
 
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, input.Password);
 
             if (result != PasswordVerificationResult.Success)
             {
-                return new Result<AuthToken>(false, null, "Incorrect credentials.", ErrorType.BadRequest);
+                return new Result<AuthToken>(false, null, "Nieprawidłowe dane logowania", ErrorType.BadRequest);
             }
 
             var token = _tokenService.BuildToken(user);
